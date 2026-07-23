@@ -158,7 +158,7 @@ export default function AdminApp() {
             {entrando ? 'Entrando…' : 'Entrar'}
           </button>
 
-          <a href="#/" className="adm-login-volver">Volver a la tienda</a>
+          <a href="/" className="adm-login-volver">Volver a la tienda</a>
         </form>
       </div>
     )
@@ -180,7 +180,7 @@ export default function AdminApp() {
         </nav>
 
         <div className="adm-sidebar-pie">
-          <a href="#/" className="adm-sidebar-link">
+          <a href="/" className="adm-sidebar-link">
             <ArrowSquareOut size={17} /> Ver tienda
           </a>
           <button className="adm-sidebar-link" onClick={salir}>

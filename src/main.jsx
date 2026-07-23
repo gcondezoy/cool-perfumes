@@ -4,19 +4,30 @@ import App from './App.jsx'
 import AdminApp from './admin/AdminApp.jsx'
 import './index.css'
 
-// Enrutado simple por hash: la tienda en "/" y el panel en "/#/admin".
-// Se usa hash para que funcione en cualquier hosting estático sin configurar
-// reescrituras de URL.
+// Enrutado: la tienda en "/" y el panel en "/admin".
+// Acepta también "/#/admin" (formato antiguo) para no romper enlaces guardados.
+// En producción, vercel.json redirige todas las rutas a index.html.
+function esRutaAdmin() {
+  return (
+    window.location.pathname.replace(/\/+$/, '').endsWith('/admin') ||
+    window.location.hash.startsWith('#/admin')
+  )
+}
+
 function Root() {
-  const [ruta, setRuta] = useState(window.location.hash)
+  const [admin, setAdmin] = useState(esRutaAdmin)
 
   useEffect(() => {
-    const alCambiar = () => setRuta(window.location.hash)
+    const alCambiar = () => setAdmin(esRutaAdmin())
     window.addEventListener('hashchange', alCambiar)
-    return () => window.removeEventListener('hashchange', alCambiar)
+    window.addEventListener('popstate', alCambiar)
+    return () => {
+      window.removeEventListener('hashchange', alCambiar)
+      window.removeEventListener('popstate', alCambiar)
+    }
   }, [])
 
-  return ruta.startsWith('#/admin') ? <AdminApp /> : <App />
+  return admin ? <AdminApp /> : <App />
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
