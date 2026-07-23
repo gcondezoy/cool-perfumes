@@ -29,6 +29,7 @@ export default function AdminApp() {
   const [error, setError] = useState('')
   const [entrando, setEntrando] = useState(false)
   const [vista, setVista] = useState('dashboard')
+  const [filtroExterno, setFiltroExterno] = useState(null)
   const [productos, setProductos] = useState(getProductosCache)
   const [errorDatos, setErrorDatos] = useState('')
 
@@ -171,10 +172,16 @@ export default function AdminApp() {
         <img src={marca.logo} alt={marca.nombre} className="adm-sidebar-logo" />
 
         <nav className="adm-nav">
-          <button className={vista === 'dashboard' ? 'activo' : ''} onClick={() => setVista('dashboard')}>
+          <button
+            className={vista === 'dashboard' ? 'activo' : ''}
+            onClick={() => { setVista('dashboard'); setFiltroExterno(null) }}
+          >
             <ChartBar size={19} weight="light" /> Dashboard
           </button>
-          <button className={vista === 'productos' ? 'activo' : ''} onClick={() => setVista('productos')}>
+          <button
+            className={vista === 'productos' ? 'activo' : ''}
+            onClick={() => { setVista('productos'); setFiltroExterno(null) }}
+          >
             <Package size={19} weight="light" /> Productos
           </button>
         </nav>
@@ -214,7 +221,13 @@ export default function AdminApp() {
         )}
 
         {vista === 'dashboard' ? (
-          <Dashboard productos={productos} />
+          <Dashboard
+            productos={productos}
+            onVerProductos={(filtro) => {
+              setFiltroExterno(filtro)
+              setVista('productos')
+            }}
+          />
         ) : (
           <ProductosAdmin
             productos={productos}
@@ -223,6 +236,8 @@ export default function AdminApp() {
             onEliminar={onEliminar}
             onRestaurar={onRestaurar}
             onSubirImagen={subirImagen}
+            filtroExterno={filtroExterno}
+            onLimpiarFiltro={() => setFiltroExterno(null)}
           />
         )}
       </main>

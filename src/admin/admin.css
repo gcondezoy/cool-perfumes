@@ -120,7 +120,135 @@
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
-.adm-kpi-etiqueta { color: var(--faint); font-size: 0.8rem; margin-top: 4px; }
+.adm-kpi-etiqueta { color: var(--ink-soft); font-size: 0.82rem; margin-top: 4px; }
+.adm-kpi-pie {
+  color: var(--faint);
+  font-size: 0.74rem;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line-soft);
+}
+
+/* Encabezado de tarjeta con ayuda en lenguaje simple */
+.adm-card-head { margin-bottom: 18px; }
+.adm-card-head .adm-card-titulo { margin-bottom: 4px; }
+.adm-card-ayuda { font-size: 0.8rem; color: var(--faint); }
+
+/* Salud del catálogo */
+.adm-salud { margin-bottom: 14px; }
+.adm-todo-ok {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #1a7f43;
+  font-size: 0.9rem;
+}
+.adm-pendientes { display: grid; gap: 8px; }
+.adm-pendiente {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  text-align: left;
+  transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.adm-pendiente:hover { border-color: var(--accent); }
+.adm-pendiente svg { color: var(--accent); flex-shrink: 0; }
+.adm-pendiente-txt { flex: 1; font-size: 0.88rem; color: var(--ink-soft); }
+.adm-pendiente-txt strong { color: var(--ink); }
+.adm-pendiente-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--faint);
+  white-space: nowrap;
+}
+.adm-pendiente:hover .adm-pendiente-cta { color: var(--ink); }
+
+/* Barras clicables */
+.adm-barra-clic {
+  width: 100%;
+  border-radius: 6px;
+  padding: 4px 6px;
+  margin: -4px -6px;
+  transition: background 0.2s var(--ease);
+}
+.adm-barra-clic:hover { background: var(--paper); }
+.adm-barra-pct {
+  display: block;
+  font-style: normal;
+  font-size: 0.68rem;
+  color: var(--faint);
+  line-height: 1.2;
+}
+
+/* Precios extremos dentro de la tarjeta */
+.adm-extremos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line-soft);
+}
+
+/* Últimos agregados */
+.adm-recientes { display: grid; gap: 2px; }
+.adm-reciente {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  text-align: left;
+  transition: background 0.2s var(--ease);
+}
+.adm-reciente:hover { background: var(--paper); }
+.adm-reciente-info { flex: 1; min-width: 0; }
+.adm-reciente-marca {
+  display: block;
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.adm-reciente-nombre {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.adm-reciente-precio { font-size: 0.88rem; white-space: nowrap; }
+
+/* Aviso de filtro activo */
+.adm-filtro-activo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--ink);
+  border-radius: 8px;
+  background: var(--paper-2);
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+}
+.adm-filtro-activo svg { color: var(--ink-soft); flex-shrink: 0; }
+.adm-filtro-activo span { flex: 1; }
+.adm-filtro-activo button {
+  font-size: 0.82rem;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.adm-filtro-activo button:hover { text-decoration: underline; }
 
 /* ---------- Tarjetas y gráficos ---------- */
 .adm-grid-2 {
@@ -195,7 +323,6 @@
   z-index: 5;
 }
 
-.adm-datos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .adm-dato-etiqueta { color: var(--faint); font-size: 0.8rem; margin-bottom: 5px; }
 .adm-dato-valor { font-family: var(--serif); font-size: 1.4rem; font-weight: 600; }
 .adm-dato-pie { color: var(--faint); font-size: 0.78rem; margin-top: 2px; }
@@ -452,7 +579,7 @@
 @media (max-width: 1000px) {
   .adm-kpis { grid-template-columns: repeat(2, 1fr); }
   .adm-grid-2 { grid-template-columns: 1fr; }
-  .adm-datos { grid-template-columns: 1fr; gap: 16px; }
+  .adm-extremos { gap: 14px; }
 }
 @media (max-width: 800px) {
   .adm-layout { grid-template-columns: 1fr; }

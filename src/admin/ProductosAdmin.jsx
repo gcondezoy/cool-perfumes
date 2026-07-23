@@ -1,9 +1,9 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
   PencilSimple, Trash, Plus, X, DownloadSimple,
-  ArrowCounterClockwise, UploadSimple, Spinner,
+  ArrowCounterClockwise, UploadSimple, Spinner, FunnelSimple,
 } from '@phosphor-icons/react'
-import { exportarJSON, modoLocal } from './adminStore.js'
+import { exportarJSON, modoLocal, RANGOS_PRECIO } from './adminStore.js'
 import { marca } from '../config.js'
 
 const VACIO = {
@@ -12,24 +12,44 @@ const VACIO = {
   genero: 'unisex',
   familia: '',
   notas: '',
+  concentracion: '',
   ml: 100,
   precio: 0,
   precioAntes: '',
   destacado: false,
   imagen: '',
-  // Ficha completa (se muestra al hacer clic en el producto)
-  descripcion: '',
-  concentracion: '',
-  notasSalida: '',
-  notasCorazon: '',
-  notasFondo: '',
-  duracion: '',
-  estela: '',
-  ocasion: '',
+}
+
+// Aplica el filtro que llega desde el dashboard.
+function cumpleFiltro(p, filtro) {
+  if (!filtro) return true
+  switch (filtro.tipo) {
+    case 'genero':
+      return p.genero === filtro.valor
+    case 'marca':
+      return p.marca === filtro.valor
+    case 'rango': {
+      const r = RANGOS_PRECIO.find((x) => x.clave === filtro.valor)
+      if (!r) return true
+      const precio = Number(p.precio) || 0
+      return precio >= r.min && precio <= r.max
+    }
+    case 'sinFoto':
+      return !p.imagen
+    case 'sinPrecio':
+      return !Number(p.precio)
+    case 'sinConcentracion':
+      return !p.concentracion
+    case 'sinNotas':
+      return !p.notas
+    default:
+      return true
+  }
 }
 
 export default function ProductosAdmin({
   productos, onCrear, onActualizar, onEliminar, onRestaurar, onSubirImagen,
+  filtroExterno, onLimpiarFiltro,
 }) {
   const [busqueda, setBusqueda] = useState('')
   const [editando, setEditando] = useState(null)
@@ -39,7 +59,15 @@ export default function ProductosAdmin({
   const [errorForm, setErrorForm] = useState('')
   const inputArchivo = useRef(null)
 
+  // Si el dashboard pidió buscar un producto concreto, lo ponemos en el buscador.
+  useEffect(() => {
+    if (filtroExterno?.tipo === 'busqueda') setBusqueda(filtroExterno.valor)
+  }, [filtroExterno])
+
+  const filtroTabla = filtroExterno?.tipo === 'busqueda' ? null : filtroExterno
+
   const filtrados = productos.filter((p) => {
+    if (!cumpleFiltro(p, filtroTabla)) return false
     const q = busqueda.trim().toLowerCase()
     if (!q) return true
     return (
@@ -102,13 +130,9 @@ export default function ProductosAdmin({
     if (!limpio.precioAntes) delete limpio.precioAntes
 
     try {
-      if (editando === 'nuevo') {
-        const { id, ...sinId } = limpio
-        await onCrear(sinId)
-      } else {
-        const { id, ...sinId } = limpio
-        await onActualizar(editando, sinId)
-      }
+      const { id, ...sinId } = limpio
+      if (editando === 'nuevo') await onCrear(sinId)
+      else await onActualizar(editando, sinId)
       cerrar()
     } catch (err) {
       setErrorForm(err.message)
@@ -137,6 +161,11 @@ export default function ProductosAdmin({
     }
   }
 
+  const limpiarTodo = () => {
+    setBusqueda('')
+    onLimpiarFiltro?.()
+  }
+
   return (
     <div className="adm-seccion">
       <header className="adm-seccion-head adm-head-fila">
@@ -158,6 +187,18 @@ export default function ProductosAdmin({
           </button>
         </div>
       </header>
+
+      {/* Filtro activo llegado desde el dashboard */}
+      {(filtroExterno || busqueda) && (
+        <div className="adm-filtro-activo">
+          <FunnelSimple size={17} weight="light" />
+          <span>
+            Mostrando <strong>{filtrados.length}</strong> de {productos.length}
+            {filtroExterno && <> · {filtroExterno.etiqueta}</>}
+          </span>
+          <button onClick={limpiarTodo}>Quitar filtro</button>
+        </div>
+      )}
 
       <input
         className="adm-input adm-buscador"
@@ -252,18 +293,29 @@ export default function ProductosAdmin({
               </label>
 
               <label className="adm-campo">
+                <span>Concentración</span>
+                <select className="adm-input" value={form.concentracion} onChange={cambiar('concentracion')}>
+                  <option value="">Sin especificar</option>
+                  <option value="Eau de Parfum">Eau de Parfum (EDP)</option>
+                  <option value="Eau de Toilette">Eau de Toilette (EDT)</option>
+                  <option value="Parfum">Parfum / Extrait</option>
+                  <option value="Eau de Cologne">Eau de Cologne (EDC)</option>
+                </select>
+              </label>
+
+              <label className="adm-campo">
                 <span>Familia olfativa</span>
                 <input className="adm-input" value={form.familia} onChange={cambiar('familia')} placeholder="Amaderado Aromático" />
+              </label>
+
+              <label className="adm-campo">
+                <span>Cantidad (ml)</span>
+                <input className="adm-input" type="number" min="0" value={form.ml} onChange={cambiar('ml')} />
               </label>
 
               <label className="adm-campo adm-campo-ancho">
                 <span>Notas principales</span>
                 <input className="adm-input" value={form.notas} onChange={cambiar('notas')} placeholder="Bergamota, pimienta, ambroxan" />
-              </label>
-
-              <label className="adm-campo">
-                <span>Tamaño (ml)</span>
-                <input className="adm-input" type="number" min="0" value={form.ml} onChange={cambiar('ml')} />
               </label>
 
               <label className="adm-campo">
@@ -329,64 +381,6 @@ export default function ProductosAdmin({
               <label className="adm-check">
                 <input type="checkbox" checked={!!form.destacado} onChange={cambiar('destacado')} />
                 <span>Marcar como destacado</span>
-              </label>
-
-              {/* ---- Ficha completa (ventana de detalles) ---- */}
-              <div className="adm-separador">
-                <span>Ficha completa</span>
-                <p>Esto es lo que ve el cliente al hacer clic en el perfume.</p>
-              </div>
-
-              <label className="adm-campo adm-campo-ancho">
-                <span>Descripción</span>
-                <textarea
-                  className="adm-input adm-textarea"
-                  rows="4"
-                  value={form.descripcion}
-                  onChange={cambiar('descripcion')}
-                  placeholder="Describe cómo huele, para quién es y en qué ocasiones usarlo…"
-                />
-              </label>
-
-              <label className="adm-campo">
-                <span>Concentración</span>
-                <select className="adm-input" value={form.concentracion} onChange={cambiar('concentracion')}>
-                  <option value="">Sin especificar</option>
-                  <option value="Eau de Parfum">Eau de Parfum (EDP)</option>
-                  <option value="Eau de Toilette">Eau de Toilette (EDT)</option>
-                  <option value="Parfum">Parfum / Extrait</option>
-                  <option value="Eau de Cologne">Eau de Cologne (EDC)</option>
-                </select>
-              </label>
-
-              <label className="adm-campo">
-                <span>Duración</span>
-                <input className="adm-input" value={form.duracion} onChange={cambiar('duracion')} placeholder="8 a 10 horas" />
-              </label>
-
-              <label className="adm-campo">
-                <span>Estela (proyección)</span>
-                <input className="adm-input" value={form.estela} onChange={cambiar('estela')} placeholder="Intensa" />
-              </label>
-
-              <label className="adm-campo">
-                <span>Ocasión</span>
-                <input className="adm-input" value={form.ocasion} onChange={cambiar('ocasion')} placeholder="Noche y eventos" />
-              </label>
-
-              <label className="adm-campo adm-campo-ancho">
-                <span>Notas de salida</span>
-                <input className="adm-input" value={form.notasSalida} onChange={cambiar('notasSalida')} placeholder="Bergamota de Calabria, mandarina" />
-              </label>
-
-              <label className="adm-campo adm-campo-ancho">
-                <span>Notas de corazón</span>
-                <input className="adm-input" value={form.notasCorazon} onChange={cambiar('notasCorazon')} placeholder="Pimienta de Sichuan, lavanda" />
-              </label>
-
-              <label className="adm-campo adm-campo-ancho">
-                <span>Notas de fondo</span>
-                <input className="adm-input" value={form.notasFondo} onChange={cambiar('notasFondo')} placeholder="Ambroxan, vainilla, haba tonka" />
               </label>
 
               {errorForm && <p className="adm-error adm-campo-ancho">{errorForm}</p>}

@@ -1,4 +1,6 @@
-import { Package, CurrencyDollar, Tag, Star } from '@phosphor-icons/react'
+import {
+  Package, CurrencyDollar, Tag, Star, CheckCircle, WarningCircle, CaretRight,
+} from '@phosphor-icons/react'
 import { calcularMetricas } from './adminStore.js'
 import { marca } from '../config.js'
 
@@ -6,46 +8,80 @@ import { marca } from '../config.js'
 const COLORES_GENERO = ['#a13c2a', '#0369a1', '#a16207']
 const COLOR_UNICO = '#3f3a30'
 
-function Barras({ datos, colores, sufijo = '' }) {
+function Barras({ datos, colores, total, onClic }) {
   const max = Math.max(...datos.map((d) => d.valor), 1)
 
   return (
     <ul className="adm-barras">
-      {datos.map((d, i) => (
-        <li key={d.etiqueta} className="adm-barra-fila">
-          <span className="adm-barra-etiqueta">{d.etiqueta}</span>
-          <span className="adm-barra-pista">
-            <span
-              className="adm-barra"
-              style={{
-                width: `${(d.valor / max) * 100}%`,
-                background: colores ? colores[i % colores.length] : COLOR_UNICO,
-              }}
-              data-tip={`${d.etiqueta}: ${d.valor}${sufijo}`}
-            />
-          </span>
-          <span className="adm-barra-valor">{d.valor}</span>
-        </li>
-      ))}
+      {datos.map((d, i) => {
+        const pct = total ? Math.round((d.valor / total) * 100) : 0
+        const Fila = onClic ? 'button' : 'div'
+        return (
+          <li key={d.etiqueta}>
+            <Fila
+              className={`adm-barra-fila ${onClic ? 'adm-barra-clic' : ''}`}
+              onClick={onClic ? () => onClic(d) : undefined}
+              title={onClic ? `Ver los ${d.valor} productos` : undefined}
+            >
+              <span className="adm-barra-etiqueta">{d.etiqueta}</span>
+              <span className="adm-barra-pista">
+                <span
+                  className="adm-barra"
+                  style={{
+                    width: `${(d.valor / max) * 100}%`,
+                    background: colores ? colores[i % colores.length] : COLOR_UNICO,
+                  }}
+                />
+              </span>
+              <span className="adm-barra-valor">
+                {d.valor}
+                {total > 0 && <em className="adm-barra-pct">{pct}%</em>}
+              </span>
+            </Fila>
+          </li>
+        )
+      })}
     </ul>
   )
 }
 
-export default function Dashboard({ productos }) {
+export default function Dashboard({ productos, onVerProductos }) {
   const m = calcularMetricas(productos)
 
   const kpis = [
-    { icono: Package, etiqueta: 'Productos', valor: m.total },
-    { icono: CurrencyDollar, etiqueta: 'Valor del catálogo', valor: `${marca.moneda} ${m.valor.toLocaleString('es-PE')}` },
-    { icono: Tag, etiqueta: 'En oferta', valor: m.enOferta },
-    { icono: Star, etiqueta: 'Destacados', valor: m.destacados },
+    {
+      icono: Package,
+      etiqueta: 'Productos en catálogo',
+      valor: m.total,
+      pie: `${m.totalMarcas} ${m.totalMarcas === 1 ? 'marca' : 'marcas'} distintas`,
+    },
+    {
+      icono: CurrencyDollar,
+      etiqueta: 'Valor del catálogo',
+      valor: `${marca.moneda} ${m.valor.toLocaleString('es-PE')}`,
+      pie: `Precio promedio: ${marca.moneda} ${m.promedio}`,
+    },
+    {
+      icono: Tag,
+      etiqueta: 'En oferta',
+      valor: m.enOferta,
+      pie: m.enOferta ? `Descuento promedio: ${m.descuentoPromedio}%` : 'Ninguno con descuento',
+    },
+    {
+      icono: Star,
+      etiqueta: 'Destacados',
+      valor: m.destacados,
+      pie: 'Aparecen con etiqueta en la tienda',
+    },
   ]
+
+  const pendientes = m.salud.filter((s) => s.items.length > 0)
 
   return (
     <div className="adm-seccion">
       <header className="adm-seccion-head">
-        <h1 className="adm-titulo">Dashboard</h1>
-        <p className="adm-sub">Resumen de tu catálogo</p>
+        <h1 className="adm-titulo">Resumen de tu tienda</h1>
+        <p className="adm-sub">Así se ve tu catálogo hoy. Haz clic en cualquier dato para ver esos productos.</p>
       </header>
 
       {/* KPIs */}
@@ -55,51 +91,142 @@ export default function Dashboard({ productos }) {
             <k.icono size={20} weight="light" className="adm-kpi-icono" />
             <p className="adm-kpi-valor">{k.valor}</p>
             <p className="adm-kpi-etiqueta">{k.etiqueta}</p>
+            <p className="adm-kpi-pie">{k.pie}</p>
           </article>
         ))}
       </div>
 
+      {/* Salud del catálogo */}
+      <section className="adm-card adm-salud">
+        <div className="adm-card-head">
+          <h2 className="adm-card-titulo">Qué te falta completar</h2>
+          <p className="adm-card-ayuda">
+            Un catálogo completo se ve más profesional y vende mejor.
+          </p>
+        </div>
+
+        {pendientes.length === 0 ? (
+          <p className="adm-todo-ok">
+            <CheckCircle size={22} weight="fill" />
+            Todo completo. Tu catálogo no tiene datos pendientes.
+          </p>
+        ) : (
+          <ul className="adm-pendientes">
+            {pendientes.map((s) => (
+              <li key={s.clave}>
+                <button
+                  className="adm-pendiente"
+                  onClick={() => onVerProductos({ tipo: s.clave, etiqueta: s.etiqueta })}
+                >
+                  <WarningCircle size={19} weight="light" />
+                  <span className="adm-pendiente-txt">
+                    <strong>{s.items.length}</strong> {s.items.length === 1 ? 'producto' : 'productos'} {s.etiqueta.toLowerCase()}
+                  </span>
+                  <span className="adm-pendiente-cta">
+                    Revisar <CaretRight size={13} weight="bold" />
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
       {/* Gráficos */}
       <div className="adm-grid-2">
         <section className="adm-card">
-          <h2 className="adm-card-titulo">Productos por género</h2>
-          <Barras datos={m.porGenero} colores={COLORES_GENERO} />
+          <div className="adm-card-head">
+            <h2 className="adm-card-titulo">Para quién son tus perfumes</h2>
+            <p className="adm-card-ayuda">Cuántos productos tienes por género.</p>
+          </div>
+          <Barras
+            datos={m.porGenero}
+            colores={COLORES_GENERO}
+            total={m.total}
+            onClic={(d) => onVerProductos({ tipo: 'genero', valor: d.clave, etiqueta: d.etiqueta })}
+          />
         </section>
 
         <section className="adm-card">
-          <h2 className="adm-card-titulo">Marcas con más productos</h2>
+          <div className="adm-card-head">
+            <h2 className="adm-card-titulo">Marcas con más productos</h2>
+            <p className="adm-card-ayuda">Tus 6 marcas principales.</p>
+          </div>
           {m.porMarca.length ? (
-            <Barras datos={m.porMarca} />
+            <Barras
+              datos={m.porMarca}
+              total={m.total}
+              onClic={(d) => onVerProductos({ tipo: 'marca', valor: d.clave, etiqueta: d.etiqueta })}
+            />
           ) : (
             <p className="adm-vacio-texto">Aún no hay productos.</p>
           )}
         </section>
       </div>
 
-      {/* Datos rápidos */}
-      <section className="adm-card">
-        <h2 className="adm-card-titulo">Precios</h2>
-        <div className="adm-datos">
-          <div>
-            <p className="adm-dato-etiqueta">Precio promedio</p>
-            <p className="adm-dato-valor">{marca.moneda} {m.promedio}</p>
+      <div className="adm-grid-2">
+        <section className="adm-card">
+          <div className="adm-card-head">
+            <h2 className="adm-card-titulo">Cómo están tus precios</h2>
+            <p className="adm-card-ayuda">Cuántos productos hay en cada rango.</p>
           </div>
-          <div>
-            <p className="adm-dato-etiqueta">Más caro</p>
-            <p className="adm-dato-valor">
-              {m.masCaro ? `${marca.moneda} ${m.masCaro.precio}` : '—'}
-            </p>
-            <p className="adm-dato-pie">{m.masCaro ? `${m.masCaro.marca} ${m.masCaro.nombre}` : ''}</p>
+          <Barras
+            datos={m.porRangoPrecio}
+            total={m.total}
+            onClic={(d) => onVerProductos({ tipo: 'rango', valor: d.clave, etiqueta: d.etiqueta })}
+          />
+          <div className="adm-extremos">
+            <div>
+              <p className="adm-dato-etiqueta">Más caro</p>
+              <p className="adm-dato-valor">
+                {m.masCaro ? `${marca.moneda} ${m.masCaro.precio}` : '—'}
+              </p>
+              <p className="adm-dato-pie">{m.masCaro ? `${m.masCaro.marca} ${m.masCaro.nombre}` : ''}</p>
+            </div>
+            <div>
+              <p className="adm-dato-etiqueta">Más accesible</p>
+              <p className="adm-dato-valor">
+                {m.masBarato ? `${marca.moneda} ${m.masBarato.precio}` : '—'}
+              </p>
+              <p className="adm-dato-pie">{m.masBarato ? `${m.masBarato.marca} ${m.masBarato.nombre}` : ''}</p>
+            </div>
           </div>
-          <div>
-            <p className="adm-dato-etiqueta">Más accesible</p>
-            <p className="adm-dato-valor">
-              {m.masBarato ? `${marca.moneda} ${m.masBarato.precio}` : '—'}
-            </p>
-            <p className="adm-dato-pie">{m.masBarato ? `${m.masBarato.marca} ${m.masBarato.nombre}` : ''}</p>
+        </section>
+
+        <section className="adm-card">
+          <div className="adm-card-head">
+            <h2 className="adm-card-titulo">Últimos agregados</h2>
+            <p className="adm-card-ayuda">Los productos más recientes de tu catálogo.</p>
           </div>
-        </div>
-      </section>
+          {m.recientes.length ? (
+            <ul className="adm-recientes">
+              {m.recientes.map((p) => (
+                <li key={p.id}>
+                  <button
+                    className="adm-reciente"
+                    onClick={() => onVerProductos({ tipo: 'busqueda', valor: p.nombre, etiqueta: p.nombre })}
+                  >
+                    {p.imagen ? (
+                      <img src={p.imagen} alt="" className="adm-thumb" />
+                    ) : (
+                      <span className="adm-thumb adm-thumb-vacio" />
+                    )}
+                    <span className="adm-reciente-info">
+                      <span className="adm-reciente-marca">{p.marca}</span>
+                      <span className="adm-reciente-nombre">{p.nombre}</span>
+                    </span>
+                    <span className="adm-reciente-precio">
+                      {marca.moneda} {p.precio}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="adm-vacio-texto">Aún no hay productos.</p>
+          )}
+        </section>
+      </div>
     </div>
   )
 }

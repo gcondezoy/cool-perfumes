@@ -26,15 +26,7 @@ function desdeDB(fila) {
     precioAntes: fila.precio_antes != null ? Number(fila.precio_antes) : undefined,
     destacado: !!fila.destacado,
     imagen: fila.imagen || '',
-    // Ficha completa
-    descripcion: fila.descripcion || '',
     concentracion: fila.concentracion || '',
-    notasSalida: fila.notas_salida || '',
-    notasCorazon: fila.notas_corazon || '',
-    notasFondo: fila.notas_fondo || '',
-    duracion: fila.duracion || '',
-    estela: fila.estela || '',
-    ocasion: fila.ocasion || '',
   }
 }
 
@@ -50,15 +42,10 @@ function haciaDB(p) {
     precio_antes: p.precioAntes ? Number(p.precioAntes) : null,
     destacado: !!p.destacado,
     imagen: p.imagen || null,
-    // Ficha completa
-    descripcion: p.descripcion || null,
     concentracion: p.concentracion || null,
-    notas_salida: p.notasSalida || null,
-    notas_corazon: p.notasCorazon || null,
-    notas_fondo: p.notasFondo || null,
-    duracion: p.duracion || null,
-    estela: p.estela || null,
-    ocasion: p.ocasion || null,
+    // Nota: las columnas descripcion, notas_salida/corazon/fondo, duracion,
+    // estela y ocasion ya no se editan desde el panel. NO se incluyen aquí a
+    // propósito: así una edición no borra los datos que ya existan en la BD.
   }
 }
 
@@ -216,12 +203,29 @@ export function exportarJSON(lista) {
 }
 
 // --- Métricas para el dashboard ---
+export const RANGOS_PRECIO = [
+  { clave: 'bajo', etiqueta: 'Menos de S/ 300', min: 0, max: 299 },
+  { clave: 'medio', etiqueta: 'S/ 300 a S/ 500', min: 300, max: 500 },
+  { clave: 'alto', etiqueta: 'S/ 501 a S/ 800', min: 501, max: 800 },
+  { clave: 'premium', etiqueta: 'Más de S/ 800', min: 801, max: Infinity },
+]
+
 export function calcularMetricas(lista) {
   const total = lista.length
   const valor = lista.reduce((s, p) => s + (Number(p.precio) || 0), 0)
   const promedio = total ? Math.round(valor / total) : 0
-  const enOferta = lista.filter((p) => p.precioAntes).length
-  const destacados = lista.filter((p) => p.destacado).length
+  const enOferta = lista.filter((p) => p.precioAntes)
+  const destacados = lista.filter((p) => p.destacado)
+
+  // Descuento promedio de los productos en oferta
+  const descuentoPromedio = enOferta.length
+    ? Math.round(
+        enOferta.reduce(
+          (s, p) => s + ((p.precioAntes - p.precio) / p.precioAntes) * 100,
+          0,
+        ) / enOferta.length,
+      )
+    : 0
 
   const porGenero = ['mujer', 'hombre', 'unisex'].map((g) => ({
     clave: g,
@@ -234,15 +238,43 @@ export function calcularMetricas(lista) {
     conteoMarcas[p.marca] = (conteoMarcas[p.marca] || 0) + 1
   })
   const porMarca = Object.entries(conteoMarcas)
-    .map(([etiqueta, valor]) => ({ etiqueta, valor }))
+    .map(([etiqueta, valor]) => ({ etiqueta, valor, clave: etiqueta }))
     .sort((a, b) => b.valor - a.valor)
     .slice(0, 6)
+  const totalMarcas = Object.keys(conteoMarcas).length
+
+  const porRangoPrecio = RANGOS_PRECIO.map((r) => ({
+    clave: r.clave,
+    etiqueta: r.etiqueta,
+    valor: lista.filter((p) => {
+      const precio = Number(p.precio) || 0
+      return precio >= r.min && precio <= r.max
+    }).length,
+  }))
+
+  // Salud del catálogo: cosas que conviene completar
+  const salud = [
+    { clave: 'sinFoto', etiqueta: 'Sin foto', items: lista.filter((p) => !p.imagen) },
+    { clave: 'sinPrecio', etiqueta: 'Sin precio', items: lista.filter((p) => !Number(p.precio)) },
+    {
+      clave: 'sinConcentracion',
+      etiqueta: 'Sin concentración',
+      items: lista.filter((p) => !p.concentracion),
+    },
+    { clave: 'sinNotas', etiqueta: 'Sin notas', items: lista.filter((p) => !p.notas) },
+  ]
 
   const precios = lista.map((p) => Number(p.precio) || 0)
   const masCaro = total ? lista.find((p) => Number(p.precio) === Math.max(...precios)) : null
   const masBarato = total ? lista.find((p) => Number(p.precio) === Math.min(...precios)) : null
 
-  return { total, valor, promedio, enOferta, destacados, porGenero, porMarca, masCaro, masBarato }
+  const recientes = [...lista].slice(0, 5)
+
+  return {
+    total, valor, promedio, enOferta: enOferta.length, destacados: destacados.length,
+    descuentoPromedio, porGenero, porMarca, totalMarcas, porRangoPrecio, salud,
+    masCaro, masBarato, recientes,
+  }
 }
 
 // --- Autenticación (solo con Supabase) ---
