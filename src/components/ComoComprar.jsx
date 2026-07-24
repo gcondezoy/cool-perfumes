@@ -25,7 +25,7 @@ export default function ComoComprar() {
     <section className="comprar" id="comprar">
       <div className="container comprar-grid">
         <Reveal className="comprar-media" variant="scale">
-          <img src={imagenes.editorial} alt="Selección de perfumes" loading="lazy" />
+          <img src={imagenes.editorial} alt="Selección de perfumes Cool Perfumes" loading="lazy" />
         </Reveal>
 
         <div className="comprar-copy">

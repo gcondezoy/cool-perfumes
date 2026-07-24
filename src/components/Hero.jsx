@@ -35,8 +35,7 @@ export default function Hero({ onVerCatalogo }) {
         </div>
 
         <div className="hero-media anim-media">
-          {/* Reemplaza por tu propia fotografía de campaña (vertical). */}
-          <img src={imagenes.hero} alt="Frasco de perfume de autor" loading="eager" />
+          <img src={imagenes.hero} alt="Colección de perfumes Cool Perfumes" loading="eager" />
         </div>
       </div>
     </section>

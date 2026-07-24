@@ -206,8 +206,11 @@ export const productos = [
   },
 ]
 
-// Imágenes usadas en secciones (hero y editorial). Reemplázalas también.
+// Imágenes usadas en secciones (hero y "Cómo comprar").
+// Los .webp son versiones optimizadas de los .png que subió el cliente
+// (mismo contenido, ~93% más livianos). Si se reemplazan, conviene volver
+// a comprimir a WebP para no perjudicar la velocidad de carga.
 export const imagenes = {
-  hero: img('1610461888750-10bfc601b874'),
-  editorial: img('1594125311687-3b1b3eafa9f4'),
+  hero: '/cool-image-hero.webp',
+  editorial: '/cool-imagen-como-pedir.webp',
 }
