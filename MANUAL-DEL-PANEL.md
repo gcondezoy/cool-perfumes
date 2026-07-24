@@ -101,6 +101,46 @@ Haz clic en cualquier barra (una marca, un género, un rango de precio) y te lle
 
 ---
 
+## Pedidos: cobrar y descartar a los que no pagan
+
+Cada vez que alguien presiona **"Pedir por WhatsApp"** en la tienda, el pedido
+queda registrado solo en la sección **Pedidos**. No tienes que hacer nada.
+
+### Cómo identificar el pedido
+En el mensaje de WhatsApp que te llega viene un **código** al final:
+
+```
+Total: S/ 658
+Pedido: CP-7K3A     ← búscalo en el panel
+```
+
+Ese mismo código aparece en la lista de Pedidos. Así sabes cuál es cuál.
+
+### Qué hacer con cada pedido
+
+| Botón | Cuándo usarlo |
+|---|---|
+| ✅ **Marcar como pagado** | Cuando ya recibiste el dinero |
+| ❌ **Cancelar** | Cuando el cliente pidió pero no concretó |
+| ↩️ **Volver a pendiente** | Si te equivocaste |
+| 🗑️ **Eliminar** | Para borrarlo definitivamente |
+
+Haz clic en la flecha del pedido para ver el detalle de qué perfumes pidió.
+
+> **Importante:** los pedidos **cancelados no cuentan** en tus estadísticas de
+> venta ni en "Lo más pedido". Así los que piden y no pagan no te distorsionan
+> los números.
+
+### Los números de venta
+
+- **Vendido (cobrado)** — solo los pedidos que marcaste como pagados. Es tu venta real.
+- **Por cobrar** — lo que tienes pendiente. El menú muestra un número rojo con los pendientes.
+- **Pedidos (7 días)** — cuántos entraron en la última semana.
+- **Ticket promedio** — cuánto gasta en promedio cada cliente que sí paga.
+- **Lo más pedido** — qué perfumes te piden más. Úsalo para saber qué reponer.
+
+---
+
 ## Copia de seguridad (hazlo de vez en cuando)
 
 En **Productos**, botón **"Exportar JSON"**. Se descarga un archivo con todo tu catálogo.

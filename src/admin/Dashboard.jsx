@@ -135,8 +135,10 @@ export default function Dashboard({ productos, pedidos, onVerProductos, onVerPed
                 <span className="adm-pendiente-txt">
                   Tienes <strong>{v.pendientes}</strong>{' '}
                   {v.pendientes === 1 ? 'pedido pendiente' : 'pedidos pendientes'} por{' '}
-                  <strong>{marca.moneda} {v.porCobrar.toLocaleString('es-PE')}</strong>.
-                  Márcalos como pagados o cancélalos si no concretaron.
+                  <strong>{marca.moneda} {v.porCobrar.toLocaleString('es-PE')}</strong>.{' '}
+                  {v.pendientes === 1
+                    ? 'Márcalo como pagado o cancélalo si no concretó.'
+                    : 'Márcalos como pagados o cancélalos si no concretaron.'}
                 </span>
                 <span className="adm-pendiente-cta">Revisar <CaretRight size={13} weight="bold" /></span>
               </button>
