@@ -121,16 +121,19 @@ export default function App() {
   // --- Filtrado y búsqueda ---
   const productosFiltrados = useMemo(() => {
     const q = busqueda.trim().toLowerCase()
-    return productos.filter((p) => {
-      const coincideGenero = filtro === 'todos' || p.genero === filtro
-      const coincideBusqueda =
-        !q ||
-        p.nombre.toLowerCase().includes(q) ||
-        p.marca.toLowerCase().includes(q) ||
-        p.familia.toLowerCase().includes(q) ||
-        p.notas.toLowerCase().includes(q)
-      return coincideGenero && coincideBusqueda
-    })
+    return productos
+      .filter((p) => {
+        const coincideGenero = filtro === 'todos' || p.genero === filtro
+        const coincideBusqueda =
+          !q ||
+          p.nombre.toLowerCase().includes(q) ||
+          p.marca.toLowerCase().includes(q) ||
+          p.familia.toLowerCase().includes(q) ||
+          p.notas.toLowerCase().includes(q)
+        return coincideGenero && coincideBusqueda
+      })
+      // Los agotados van al final (el orden del resto se mantiene).
+      .sort((a, b) => (a.agotado === b.agotado ? 0 : a.agotado ? 1 : -1))
   }, [filtro, busqueda, productos])
 
   return (
