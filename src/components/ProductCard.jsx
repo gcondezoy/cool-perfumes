@@ -1,14 +1,20 @@
 import { useRef, useEffect, useState } from 'react'
 import { Plus, Check } from '@phosphor-icons/react'
-import { marca as config } from '../config.js'
+import { marca as config, abreviarConcentracion } from '../config.js'
 
 export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index = 0 }) {
-  const { nombre, marca, familia, notas, ml, precio, precioAntes, destacado, imagen } =
+  const { nombre, marca, notas, ml, precio, precioAntes, destacado, openBox, concentracion, imagen } =
     producto
 
   const descuento = precioAntes
     ? Math.round(((precioAntes - precio) / precioAntes) * 100)
     : null
+
+  // Meta bajo el nombre: "EDP · 100 ml" (o solo lo que exista).
+  const meta = [
+    concentracion && abreviarConcentracion(concentracion),
+    ml && `${ml} ml`,
+  ].filter(Boolean).join(' · ')
 
   const ref = useRef(null)
   const [visible, setVisible] = useState(false)
@@ -54,7 +60,8 @@ export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index
       >
         <div className="card-media">
           <img src={imagen} alt={`${marca} ${nombre}`} loading="lazy" />
-          {destacado && <span className="badge">Destacado</span>}
+          {openBox && <span className="badge badge-openbox">Open Box</span>}
+          {!openBox && destacado && <span className="badge">Destacado</span>}
           {descuento && <span className="badge badge-oferta">-{descuento}%</span>}
           <span className="card-ver">Ver detalles</span>
         </div>
@@ -62,7 +69,7 @@ export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index
         <div className="card-body">
           <p className="card-marca">{marca}</p>
           <h3 className="card-nombre">{nombre}</h3>
-          <p className="card-familia">{familia} · {ml} ml</p>
+          <p className="card-familia">{meta}</p>
           <p className="card-notas">{notas}</p>
         </div>
       </button>

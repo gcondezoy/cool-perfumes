@@ -71,6 +71,12 @@ La tienda calcula sola el porcentaje y muestra la etiqueta roja de descuento.
 
 Marca la casilla **"Marcar como destacado"** al final del formulario. Aparecerá con una etiqueta *Destacado* en la tienda. Úsalo con tus productos estrella o los que más quieras vender.
 
+## Marcar un perfume como Open Box
+
+Si un perfume es **caja abierta / tester**, marca la casilla **"Open Box"** en el
+formulario. Aparecerá con una etiqueta *Open Box* en su tarjeta y en su ficha,
+para que el cliente sepa que es una presentación abierta.
+
 ---
 
 ## Editar o eliminar

@@ -149,11 +149,11 @@ ol, ul { list-style: none; }
 .logo { display: flex; align-items: center; }
 /* Logo PNG transparente y recortado: solo altura, ancho automático. */
 .logo-img {
-  height: 56px;
+  height: 66px;
   width: auto;
   transition: height 0.35s var(--ease);
 }
-.is-scrolled .logo-img { height: 46px; }
+.is-scrolled .logo-img { height: 54px; }
 .nav { display: flex; align-items: center; gap: 34px; }
 .nav a, .nav .nav-link {
   font-family: var(--sans);
@@ -439,6 +439,11 @@ ol, ul { list-style: none; }
   background: var(--accent);
   color: #fff;
 }
+.badge-openbox {
+  background: var(--ink);
+  color: var(--paper);
+  letter-spacing: 0.12em;
+}
 
 .card-body { padding: 18px 2px 0; display: flex; flex-direction: column; flex: 1; }
 .card-marca {
@@ -662,7 +667,19 @@ ol, ul { list-style: none; }
   line-height: 1.08;
   letter-spacing: -0.015em;
 }
-.pm-familia { color: var(--ink-soft); font-size: 0.88rem; margin-top: 6px; }
+.pm-sub-fila { display: flex; align-items: center; gap: 12px; margin-top: 6px; flex-wrap: wrap; }
+.pm-familia { color: var(--ink-soft); font-size: 0.88rem; }
+.pm-openbox {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 11px;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
 
 .pm-precio { display: flex; align-items: baseline; gap: 12px; margin: 18px 0 20px; }
 .pm-precio-antes { color: var(--faint); text-decoration: line-through; font-size: 0.95rem; }
@@ -922,9 +939,9 @@ ol, ul { list-style: none; }
 
 @media (max-width: 620px) {
   .container { padding-inline: 18px; }
-  .header-inner { height: 66px; }
-  .logo-img { height: 46px; }
-  .is-scrolled .logo-img { height: 42px; }
+  .header-inner { height: 70px; }
+  .logo-img { height: 54px; }
+  .is-scrolled .logo-img { height: 48px; }
   .cart-btn, .menu-btn { width: 42px; height: 42px; }
   .hero { padding: 24px 0 56px; }
   .hero-title { font-size: clamp(2.3rem, 10vw, 3.1rem); }

@@ -525,6 +525,7 @@
   border-radius: 999px;
   color: var(--ink-soft);
 }
+.adm-pill-openbox { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .adm-acciones { display: flex; gap: 4px; justify-content: flex-end; }
 .adm-acciones button {
   display: grid; place-items: center;

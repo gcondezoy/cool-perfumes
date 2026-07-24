@@ -25,6 +25,7 @@ function desdeDB(fila) {
     precio: Number(fila.precio),
     precioAntes: fila.precio_antes != null ? Number(fila.precio_antes) : undefined,
     destacado: !!fila.destacado,
+    openBox: !!fila.open_box,
     imagen: fila.imagen || '',
     concentracion: fila.concentracion || '',
   }
@@ -41,6 +42,7 @@ function haciaDB(p) {
     precio: Number(p.precio) || 0,
     precio_antes: p.precioAntes ? Number(p.precioAntes) : null,
     destacado: !!p.destacado,
+    open_box: !!p.openBox,
     imagen: p.imagen || null,
     concentracion: p.concentracion || null,
     // Nota: las columnas descripcion, notas_salida/corazon/fondo, duracion,
@@ -101,8 +103,16 @@ export async function crearProducto(producto) {
   }
 
   const { error } = await supabase.from('productos').insert(haciaDB(producto))
-  if (error) throw new Error('No se pudo crear el producto: ' + error.message)
+  if (error) throw new Error(mensajeError('No se pudo crear el producto', error))
   return listarProductos()
+}
+
+// Traduce errores comunes a algo accionable.
+function mensajeError(prefijo, error) {
+  if (error.message?.includes('open_box')) {
+    return 'Falta agregar la columna Open Box. Ejecuta supabase/open-box.sql en Supabase (SQL Editor).'
+  }
+  return `${prefijo}: ${error.message}`
 }
 
 export async function actualizarProducto(id, producto) {
@@ -112,7 +122,7 @@ export async function actualizarProducto(id, producto) {
   }
 
   const { error } = await supabase.from('productos').update(haciaDB(producto)).eq('id', id)
-  if (error) throw new Error('No se pudo actualizar: ' + error.message)
+  if (error) throw new Error(mensajeError('No se pudo actualizar', error))
   return listarProductos()
 }
 

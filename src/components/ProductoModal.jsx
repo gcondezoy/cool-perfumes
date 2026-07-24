@@ -30,7 +30,7 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
   if (!producto) return null
 
   const {
-    nombre, marca, ml, precio, precioAntes, imagen, concentracion, genero,
+    nombre, marca, ml, precio, precioAntes, imagen, concentracion, genero, openBox,
   } = producto
 
   const descuento = precioAntes
@@ -84,7 +84,10 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
           <div className="pm-info">
             <p className="pm-marca">{marca}</p>
             <h2 className="pm-nombre">{nombre}</h2>
-            {subtitulo && <p className="pm-familia">{subtitulo}</p>}
+            <div className="pm-sub-fila">
+              {subtitulo && <p className="pm-familia">{subtitulo}</p>}
+              {openBox && <span className="pm-openbox">Open Box</span>}
+            </div>
 
             <div className="pm-precio">
               {precioAntes && (

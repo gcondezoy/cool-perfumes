@@ -17,6 +17,7 @@ const VACIO = {
   precio: 0,
   precioAntes: '',
   destacado: false,
+  openBox: false,
   imagen: '',
 }
 
@@ -236,6 +237,7 @@ export default function ProductosAdmin({
                 <td>
                   <span className="adm-td-nombre">{p.nombre}</span>
                   {p.destacado && <span className="adm-pill">Destacado</span>}
+                  {p.openBox && <span className="adm-pill adm-pill-openbox">Open Box</span>}
                 </td>
                 <td className="adm-td-suave">{p.genero}</td>
                 <td className="adm-td-suave">{p.ml}</td>
@@ -380,6 +382,11 @@ export default function ProductosAdmin({
               <label className="adm-check">
                 <input type="checkbox" checked={!!form.destacado} onChange={cambiar('destacado')} />
                 <span>Marcar como destacado</span>
+              </label>
+
+              <label className="adm-check">
+                <input type="checkbox" checked={!!form.openBox} onChange={cambiar('openBox')} />
+                <span>Open Box (caja abierta / tester)</span>
               </label>
 
               {errorForm && <p className="adm-error adm-campo-ancho">{errorForm}</p>}
