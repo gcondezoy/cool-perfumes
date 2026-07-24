@@ -1,5 +1,6 @@
 import { X, Minus, Plus, Trash, WhatsappLogo } from '@phosphor-icons/react'
 import { marca } from '../config.js'
+import { generarCodigo, registrarPedido } from '../admin/pedidosStore.js'
 
 export default function CartDrawer({
   abierto,
@@ -11,9 +12,12 @@ export default function CartDrawer({
 }) {
   const total = carrito.reduce((s, p) => s + p.precio * p.cantidad, 0)
 
-  // Construye el mensaje de WhatsApp con el detalle del pedido.
+  // Arma el mensaje de WhatsApp y deja registrado el pedido en el panel.
   const enviarWhatsApp = () => {
     if (carrito.length === 0) return
+
+    // El código permite ubicar este pedido en el panel al recibir el WhatsApp.
+    const codigo = generarCodigo()
 
     const lineas = carrito.map(
       (p) =>
@@ -28,12 +32,18 @@ export default function CartDrawer({
       ...lineas,
       '',
       `Total: ${marca.moneda} ${total}`,
+      `Pedido: ${codigo}`,
     ].join('\n')
 
-    const url = `https://wa.me/${marca.whatsapp}?text=${encodeURIComponent(
-      mensaje,
-    )}`
+    const url = `https://wa.me/${marca.whatsapp}?text=${encodeURIComponent(mensaje)}`
+
+    // Se abre WhatsApp de inmediato (si esperáramos, el navegador podría
+    // bloquear la ventana emergente). El registro se guarda en segundo plano.
     window.open(url, '_blank', 'noopener')
+
+    registrarPedido({ codigo, carrito, total }).catch((e) =>
+      console.warn('El pedido no se pudo registrar:', e.message),
+    )
   }
 
   return (

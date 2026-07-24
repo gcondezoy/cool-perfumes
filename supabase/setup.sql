@@ -96,7 +96,10 @@ create policy "Borrar imagenes autenticados"
 
 -- =============================================================
 --  4. (Opcional) Catálogo inicial de ejemplo
---     Bórralo o cámbialo por tus productos reales.
+--
+--  ⚠️ NO ejecutes esta parte si ya tienes tus productos cargados:
+--     volvería a insertar estos 8 perfumes de ejemplo (duplicados).
+--     Si solo necesitas crear la tabla, detente antes de este bloque.
 -- =============================================================
 insert into public.productos
   (nombre, marca, genero, familia, notas, ml, precio, precio_antes, destacado, imagen,

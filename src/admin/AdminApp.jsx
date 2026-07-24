@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { ChartBar, Package, SignOut, ArrowSquareOut, Warning, Database } from '@phosphor-icons/react'
+import { ChartBar, Package, SignOut, ArrowSquareOut, Warning, Database, Receipt } from '@phosphor-icons/react'
 import {
   listarProductos,
   getProductosCache,
@@ -14,9 +14,13 @@ import {
   sesionActual,
   modoLocal,
 } from './adminStore.js'
+import {
+  listarPedidos, cambiarEstadoPedido, eliminarPedido, suscribirPedidos,
+} from './pedidosStore.js'
 import { marca } from '../config.js'
 import Dashboard from './Dashboard.jsx'
 import ProductosAdmin from './ProductosAdmin.jsx'
+import PedidosAdmin from './PedidosAdmin.jsx'
 import './admin.css'
 
 export default function AdminApp() {
@@ -29,7 +33,9 @@ export default function AdminApp() {
   const [vista, setVista] = useState('dashboard')
   const [filtroExterno, setFiltroExterno] = useState(null)
   const [productos, setProductos] = useState(getProductosCache)
+  const [pedidos, setPedidos] = useState([])
   const [errorDatos, setErrorDatos] = useState('')
+  const [errorPedidos, setErrorPedidos] = useState('')
 
   // ---- Sesión ----
   useEffect(() => {
@@ -59,12 +65,31 @@ export default function AdminApp() {
     }
   }, [])
 
+  // ---- Carga de pedidos (error aparte para que no lo pise la de productos) ----
+  const cargarPedidos = useCallback(async () => {
+    try {
+      setPedidos(await listarPedidos())
+      setErrorPedidos('')
+    } catch (e) {
+      setErrorPedidos(
+        e.message.includes('pedidos')
+          ? 'Falta crear la tabla de pedidos. Ejecuta supabase/pedidos.sql en Supabase.'
+          : e.message,
+      )
+    }
+  }, [])
+
   useEffect(() => {
     if (!autenticado) return
     cargar()
+    cargarPedidos()
     const desuscribir = suscribir(cargar)
-    return desuscribir
-  }, [autenticado, cargar])
+    const desuscribirPedidos = suscribirPedidos(cargarPedidos)
+    return () => {
+      desuscribir?.()
+      desuscribirPedidos?.()
+    }
+  }, [autenticado, cargar, cargarPedidos])
 
   // ---- Acciones ----
   const conManejo = (fn) => async (...args) => {
@@ -78,6 +103,21 @@ export default function AdminApp() {
       throw e
     }
   }
+
+  // Acciones sobre pedidos
+  const conManejoPedidos = (fn) => async (...args) => {
+    try {
+      const resultado = await fn(...args)
+      if (Array.isArray(resultado)) setPedidos(resultado)
+      else await cargarPedidos()
+      setErrorDatos('')
+    } catch (e) {
+      setErrorDatos(e.message)
+    }
+  }
+
+  const onCambiarEstadoPedido = conManejoPedidos(cambiarEstadoPedido)
+  const onEliminarPedido = conManejoPedidos(eliminarPedido)
 
   const onCrear = conManejo(crearProducto)
   const onActualizar = conManejo(actualizarProducto)
@@ -185,6 +225,17 @@ export default function AdminApp() {
             <ChartBar size={19} weight="light" /> Dashboard
           </button>
           <button
+            className={vista === 'pedidos' ? 'activo' : ''}
+            onClick={() => setVista('pedidos')}
+          >
+            <Receipt size={19} weight="light" /> Pedidos
+            {pedidos.filter((p) => p.estado === 'pendiente').length > 0 && (
+              <span className="adm-nav-badge">
+                {pedidos.filter((p) => p.estado === 'pendiente').length}
+              </span>
+            )}
+          </button>
+          <button
             className={vista === 'productos' ? 'activo' : ''}
             onClick={() => { setVista('productos'); setFiltroExterno(null) }}
           >
@@ -226,13 +277,28 @@ export default function AdminApp() {
           </div>
         )}
 
+        {errorPedidos && (
+          <div className="adm-aviso adm-aviso-error">
+            <Warning size={18} weight="light" />
+            <p>{errorPedidos}</p>
+          </div>
+        )}
+
         {vista === 'dashboard' ? (
           <Dashboard
             productos={productos}
+            pedidos={pedidos}
             onVerProductos={(filtro) => {
               setFiltroExterno(filtro)
               setVista('productos')
             }}
+            onVerPedidos={() => setVista('pedidos')}
+          />
+        ) : vista === 'pedidos' ? (
+          <PedidosAdmin
+            pedidos={pedidos}
+            onCambiarEstado={onCambiarEstadoPedido}
+            onEliminar={onEliminarPedido}
           />
         ) : (
           <ProductosAdmin
