@@ -45,3 +45,18 @@ export const categorias = [
   { id: 'hombre', nombre: 'Hombre' },
   { id: 'unisex', nombre: 'Unisex' },
 ]
+
+// Concentraciones y su abreviatura (se muestra junto al tamaño: "EDP · 100 ml").
+// El "valor" es lo que se guarda; el "nombre" es lo que se ve en el formulario.
+export const concentraciones = [
+  { valor: 'Eau de Parfum', nombre: 'Eau de Parfum (EDP)', abrev: 'EDP' },
+  { valor: 'Eau de Toilette', nombre: 'Eau de Toilette (EDT)', abrev: 'EDT' },
+  { valor: 'Parfum', nombre: 'Parfum / Extrait', abrev: 'Parfum' },
+  { valor: 'Elixir', nombre: 'Elixir', abrev: 'Elixir' },
+  { valor: 'Eau de Cologne', nombre: 'Eau de Cologne (EDC)', abrev: 'EDC' },
+]
+
+export function abreviarConcentracion(valor) {
+  const c = concentraciones.find((x) => x.valor === valor)
+  return c ? c.abrev : valor
+}

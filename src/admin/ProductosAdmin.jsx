@@ -4,7 +4,7 @@ import {
   ArrowCounterClockwise, UploadSimple, Spinner, FunnelSimple,
 } from '@phosphor-icons/react'
 import { exportarJSON, modoLocal, RANGOS_PRECIO } from './adminStore.js'
-import { marca } from '../config.js'
+import { marca, concentraciones } from '../config.js'
 
 const VACIO = {
   nombre: '',
@@ -296,10 +296,9 @@ export default function ProductosAdmin({
                 <span>Concentración</span>
                 <select className="adm-input" value={form.concentracion} onChange={cambiar('concentracion')}>
                   <option value="">Sin especificar</option>
-                  <option value="Eau de Parfum">Eau de Parfum (EDP)</option>
-                  <option value="Eau de Toilette">Eau de Toilette (EDT)</option>
-                  <option value="Parfum">Parfum / Extrait</option>
-                  <option value="Eau de Cologne">Eau de Cologne (EDC)</option>
+                  {concentraciones.map((c) => (
+                    <option key={c.valor} value={c.valor}>{c.nombre}</option>
+                  ))}
                 </select>
               </label>
 
@@ -309,7 +308,7 @@ export default function ProductosAdmin({
               </label>
 
               <label className="adm-campo">
-                <span>Cantidad (ml)</span>
+                <span>Contenido (ml)</span>
                 <input className="adm-input" type="number" min="0" value={form.ml} onChange={cambiar('ml')} />
               </label>
 

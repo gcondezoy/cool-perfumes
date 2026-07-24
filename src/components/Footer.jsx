@@ -16,8 +16,8 @@ export default function Footer() {
         <div className="footer-brand">
           <img src={marca.logo} alt={marca.nombre} className="footer-logo" />
           <p className="footer-eslogan">
-            Perfumes originales de las mejores casas del mundo, seleccionados
-            para ti. Envíos a todo el Perú.
+            Perfumes árabes, diseñador y nicho, seleccionados para ti.
+            Envíos a todo el Perú.
           </p>
           <div className="footer-social">
             <a href={marca.redes.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
@@ -71,7 +71,7 @@ export default function Footer() {
         <span>
           © {new Date().getFullYear()} {marca.nombre}
         </span>
-        <span>Perfumería · Lima, Perú</span>
+        <span>Tienda de perfumes · Lima, Perú</span>
       </div>
     </footer>
   )

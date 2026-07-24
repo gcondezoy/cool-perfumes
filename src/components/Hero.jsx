@@ -12,7 +12,7 @@ export default function Hero({ onVerCatalogo }) {
       <div className="container hero-grid">
         <div className="hero-copy">
           <p className="hero-eyebrow anim-in" style={{ '--d': '0.05s' }}>
-            Perfumería · Lima, Perú
+            Tienda de perfumes · Lima, Perú
           </p>
           <h1 className="hero-title anim-in" style={{ '--d': '0.15s' }}>
             Tu fragancia<br />
@@ -20,8 +20,8 @@ export default function Hero({ onVerCatalogo }) {
             y al mejor precio.
           </h1>
           <p className="hero-text anim-in" style={{ '--d': '0.28s' }}>
-            Perfumes árabes, diseñador y nicho 100% originales. Elige el
-            tuyo y haz tu pedido por WhatsApp en un minuto.
+            Perfumes árabes, diseñador y nicho. Elige el tuyo y haz tu
+            pedido por WhatsApp en un minuto.
           </p>
           <div className="hero-actions anim-in" style={{ '--d': '0.4s' }}>
             <a href="#catalogo" className="btn btn-primary" onClick={verCatalogo}>

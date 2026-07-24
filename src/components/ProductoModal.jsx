@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { X, Plus, WhatsappLogo } from '@phosphor-icons/react'
-import { marca as config } from '../config.js'
+import { marca as config, abreviarConcentracion } from '../config.js'
 
 export default function ProductoModal({ producto, onCerrar, onAgregar }) {
   const cerrarRef = useRef(null)
@@ -40,9 +40,15 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
   const ficha = [
     { etiqueta: 'Marca', valor: marca },
     { etiqueta: 'Concentración', valor: concentracion },
-    { etiqueta: 'Cantidad', valor: ml ? `${ml} ml` : null },
+    { etiqueta: 'Contenido', valor: ml ? `${ml} ml` : null },
     { etiqueta: 'Género', valor: genero ? genero.charAt(0).toUpperCase() + genero.slice(1) : null },
   ].filter((d) => d.valor)
+
+  // Subtítulo bajo el nombre: "EDP · 100 ml" (o solo lo que exista).
+  const subtitulo = [
+    concentracion && abreviarConcentracion(concentracion),
+    ml && `${ml} ml`,
+  ].filter(Boolean).join(' · ')
 
   const pedirPorWhatsApp = () => {
     const mensaje = `¡Hola ${config.nombre}! 👋 Quisiera consultar por el ${marca} ${nombre} (${ml} ml).`
@@ -78,7 +84,7 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
           <div className="pm-info">
             <p className="pm-marca">{marca}</p>
             <h2 className="pm-nombre">{nombre}</h2>
-            {ml && <p className="pm-familia">{ml} ml</p>}
+            {subtitulo && <p className="pm-familia">{subtitulo}</p>}
 
             <div className="pm-precio">
               {precioAntes && (
