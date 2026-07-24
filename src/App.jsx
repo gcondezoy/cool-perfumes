@@ -1,6 +1,8 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { listarProductos, getProductosCache, suscribir } from './admin/adminStore.js'
 import { categorias } from './config.js'
+
+const CLAVE_CARRITO = 'coolperfumes_carrito_v1'
 import Header from './components/Header.jsx'
 import Hero from './components/Hero.jsx'
 import Catalogo from './components/Catalogo.jsx'
@@ -13,7 +15,16 @@ import WhatsAppFab from './components/WhatsAppFab.jsx'
 export default function App() {
   const [filtro, setFiltro] = useState('todos')
   const [busqueda, setBusqueda] = useState('')
-  const [carrito, setCarrito] = useState([]) // [{ ...producto, cantidad }]
+  // El carrito se guarda en el navegador para que no se pierda al recargar.
+  const [carrito, setCarrito] = useState(() => {
+    try {
+      const guardado = localStorage.getItem(CLAVE_CARRITO)
+      const lista = guardado ? JSON.parse(guardado) : []
+      return Array.isArray(lista) ? lista : []
+    } catch {
+      return []
+    }
+  })
   const [carritoAbierto, setCarritoAbierto] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [detalle, setDetalle] = useState(null) // producto abierto en la ficha
@@ -80,6 +91,15 @@ export default function App() {
   }, [])
 
   const vaciar = useCallback(() => setCarrito([]), [])
+
+  // Guardar el carrito cada vez que cambia.
+  useEffect(() => {
+    try {
+      localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito))
+    } catch (e) {
+      console.warn('No se pudo guardar el carrito:', e)
+    }
+  }, [carrito])
 
   const totalItems = useMemo(
     () => carrito.reduce((s, p) => s + p.cantidad, 0),

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
+import { Analytics } from '@vercel/analytics/react'
 import App from './App.jsx'
 import AdminApp from './admin/AdminApp.jsx'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
 import './index.css'
 
 // Enrutado: la tienda en "/" y el panel en "/admin".
@@ -32,6 +34,10 @@ function Root() {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Root />
+    <ErrorBoundary>
+      <Root />
+      {/* Estadísticas de visitas (se activan al desplegar en Vercel) */}
+      <Analytics />
+    </ErrorBoundary>
   </React.StrictMode>,
 )

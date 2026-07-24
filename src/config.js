@@ -33,11 +33,8 @@ export const marca = {
   // Moneda usada en los precios.
   moneda: 'S/',
 
-  // Clave del panel admin (se entra en /#/admin).
-  // OJO: esto es solo una puerta simple para uso interno. NO es seguridad
-  // real: al ser una web sin backend, la clave viaja en el código. Para
-  // protección de verdad hace falta un backend con autenticación (Supabase).
-  adminPassword: 'cool2026',
+  // El acceso al panel (/admin) se gestiona con Supabase Auth.
+  // Los usuarios se crean en: Supabase -> Authentication -> Users.
 }
 
 // Categorías del filtro. El campo "genero" de cada producto debe

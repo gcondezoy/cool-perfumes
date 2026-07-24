@@ -19,8 +19,6 @@ import Dashboard from './Dashboard.jsx'
 import ProductosAdmin from './ProductosAdmin.jsx'
 import './admin.css'
 
-const SESION_LOCAL = 'coolperfumes_admin_ok'
-
 export default function AdminApp() {
   const [autenticado, setAutenticado] = useState(false)
   const [verificando, setVerificando] = useState(true)
@@ -37,9 +35,8 @@ export default function AdminApp() {
   useEffect(() => {
     let vivo = true
     const revisar = async () => {
-      if (modoLocal) {
-        if (vivo) setAutenticado(sessionStorage.getItem(SESION_LOCAL) === '1')
-      } else {
+      // Sin Supabase no hay panel: la autenticación real vive en el backend.
+      if (!modoLocal) {
         const s = await sesionActual()
         if (vivo) setAutenticado(!!s)
       }
@@ -92,12 +89,7 @@ export default function AdminApp() {
     setEntrando(true)
     setError('')
     try {
-      if (modoLocal) {
-        if (clave !== marca.adminPassword) throw new Error('Clave incorrecta')
-        sessionStorage.setItem(SESION_LOCAL, '1')
-      } else {
-        await iniciarSesion(email, clave)
-      }
+      await iniciarSesion(email, clave)
       setAutenticado(true)
     } catch (err) {
       setError(err.message)
@@ -107,14 +99,30 @@ export default function AdminApp() {
   }
 
   const salir = async () => {
-    if (modoLocal) sessionStorage.removeItem(SESION_LOCAL)
-    else await cerrarSesion()
+    await cerrarSesion()
     setAutenticado(false)
     setClave('')
   }
 
   if (verificando) {
     return <div className="adm-login"><p className="adm-sub">Cargando…</p></div>
+  }
+
+  // ---- Sin Supabase no hay panel (la autenticación vive en el backend) ----
+  if (modoLocal) {
+    return (
+      <div className="adm-login">
+        <div className="adm-login-card">
+          <img src={marca.logo} alt={marca.nombre} className="adm-login-logo" />
+          <h1 className="adm-login-titulo">Panel no disponible</h1>
+          <p className="adm-sub" style={{ textAlign: 'center' }}>
+            Falta conectar Supabase. Revisa el archivo{' '}
+            <code>CONFIGURAR-SUPABASE.md</code> del proyecto.
+          </p>
+          <a href="/" className="adm-login-volver">Volver a la tienda</a>
+        </div>
+      </div>
+    )
   }
 
   // ---- Pantalla de acceso ----
@@ -125,31 +133,29 @@ export default function AdminApp() {
           <img src={marca.logo} alt={marca.nombre} className="adm-login-logo" />
           <h1 className="adm-login-titulo">Panel administrativo</h1>
 
-          {!modoLocal && (
-            <label className="adm-campo">
-              <span>Correo</span>
-              <input
-                className="adm-input"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="username"
-                required
-                autoFocus
-              />
-            </label>
-          )}
+          <label className="adm-campo">
+            <span>Correo</span>
+            <input
+              className="adm-input"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="username"
+              required
+              autoFocus
+            />
+          </label>
 
           <label className="adm-campo">
-            <span>{modoLocal ? 'Clave de acceso' : 'Contraseña'}</span>
+            <span>Contraseña</span>
             <input
               className="adm-input"
               type="password"
               value={clave}
               onChange={(e) => setClave(e.target.value)}
               autoComplete="current-password"
-              autoFocus={modoLocal}
               placeholder="••••••••"
+              required
             />
           </label>
 

@@ -2,16 +2,64 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Cool Perfumes — tienda de perfumes originales de las mejores marcas. Fragancias para mujer, hombre y unisex. Pide por WhatsApp con envíos a todo el Perú." />
+
+    <title>Cool Perfumes — Perfumes originales | Lima, Perú</title>
+    <meta name="description" content="Perfumes árabes, de diseñador y de nicho 100% originales. Elige tu fragancia y haz tu pedido por WhatsApp. Envíos a todo el Perú." />
+    <meta name="theme-color" content="#f4f2ee" />
+
+    <!-- Iconos -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- IMPORTANTE: cambia esta línea por tu dominio final cuando lo tengas -->
+    <link rel="canonical" href="https://cool-perfumes.vercel.app/" />
+
+    <!-- Vista previa al compartir por WhatsApp, Instagram, Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Cool Perfumes" />
+    <meta property="og:locale" content="es_PE" />
+    <meta property="og:title" content="Cool Perfumes — Perfumes originales" />
+    <meta property="og:description" content="Perfumes árabes, de diseñador y de nicho 100% originales. Haz tu pedido por WhatsApp. Envíos a todo el Perú." />
+    <meta property="og:url" content="https://cool-perfumes.vercel.app/" />
+    <meta property="og:image" content="https://cool-perfumes.vercel.app/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Cool Perfumes" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cool Perfumes — Perfumes originales" />
+    <meta name="twitter:description" content="Perfumes árabes, de diseñador y de nicho 100% originales. Pide por WhatsApp." />
+    <meta name="twitter:image" content="https://cool-perfumes.vercel.app/og-image.jpg" />
 
     <!-- Fuentes: Playfair Display (Didone, combina con el logo) + Jost (grotesca UI) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-    <title>Cool Perfumes — Perfumes originales | Lima, Perú</title>
+    <!-- Datos estructurados: ayudan a que Google entienda que es una tienda -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "Cool Perfumes",
+      "description": "Tienda de perfumes originales: árabes, de diseñador y de nicho.",
+      "image": "https://cool-perfumes.vercel.app/og-image.jpg",
+      "url": "https://cool-perfumes.vercel.app/",
+      "telephone": "+51981814457",
+      "priceRange": "S/ 200 - S/ 1500",
+      "currenciesAccepted": "PEN",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Lima",
+        "addressCountry": "PE"
+      },
+      "sameAs": [
+        "https://www.instagram.com/coolperfumes.pe/",
+        "https://www.tiktok.com/@coolperfumes.pe1"
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -1021,6 +1021,31 @@ ol, ul { list-style: none; }
   .wa-fab { width: 52px; height: 52px; right: 18px; bottom: 18px; }
 }
 
+/* ---------- Pantalla de error ---------- */
+.err-pantalla {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--paper);
+}
+.err-caja { max-width: 420px; text-align: center; }
+.err-logo { height: 46px; width: auto; margin: 0 auto 26px; }
+.err-titulo {
+  font-family: var(--serif);
+  font-size: 1.9rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.err-texto { color: var(--ink-soft); font-size: 0.95rem; margin-top: 12px; }
+.err-acciones {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 26px;
+  flex-wrap: wrap;
+}
+
 /* ---------- Accesibilidad: menos movimiento ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# El panel administrativo no debe aparecer en buscadores
+Disallow: /admin
+
+Sitemap: https://cool-perfumes.vercel.app/sitemap.xml
