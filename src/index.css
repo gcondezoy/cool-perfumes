@@ -582,7 +582,14 @@ ol, ul { list-style: none; }
   overflow: hidden;
   background: var(--paper);
 }
-.comprar-media img { width: 100%; height: 100%; object-fit: cover; }
+/* Blanco y negro, igual que la foto del hero (esta es más oscura de
+   origen, así que se sube un poco el brillo/contraste para que se
+   sigan viendo los detalles sin perder el ambiente). */
+.comprar-media img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) brightness(1.25) contrast(1.05);
+}
 .comprar-intro { max-width: 44ch; margin-bottom: 40px; font-size: 1.02rem; }
 
 .pasos { display: grid; gap: 4px; }
