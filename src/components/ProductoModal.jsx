@@ -30,7 +30,7 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
   if (!producto) return null
 
   const {
-    nombre, marca, ml, precio, precioAntes, imagen, concentracion, genero, openBox,
+    nombre, marca, ml, precio, precioAntes, imagen, concentracion, genero, openBox, agotado,
   } = producto
 
   const descuento = precioAntes
@@ -87,6 +87,7 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
             <div className="pm-sub-fila">
               {subtitulo && <p className="pm-familia">{subtitulo}</p>}
               {openBox && <span className="pm-openbox">Open Box</span>}
+              {agotado && <span className="pm-agotado">Agotado</span>}
             </div>
 
             <div className="pm-precio">
@@ -111,16 +112,22 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
             )}
 
             <div className="pm-acciones">
-              <button
-                className="btn btn-primary pm-btn"
-                onClick={() => {
-                  onAgregar(producto)
-                  onCerrar()
-                }}
-              >
-                <Plus size={17} weight="bold" />
-                Agregar al carrito
-              </button>
+              {agotado ? (
+                <button className="btn pm-btn pm-btn-agotado" disabled>
+                  Agotado
+                </button>
+              ) : (
+                <button
+                  className="btn btn-primary pm-btn"
+                  onClick={() => {
+                    onAgregar(producto)
+                    onCerrar()
+                  }}
+                >
+                  <Plus size={17} weight="bold" />
+                  Agregar al carrito
+                </button>
+              )}
               <button className="btn btn-ghost pm-btn" onClick={pedirPorWhatsApp}>
                 <WhatsappLogo size={18} weight="fill" />
                 Consultar

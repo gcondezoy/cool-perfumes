@@ -26,6 +26,7 @@ function desdeDB(fila) {
     precioAntes: fila.precio_antes != null ? Number(fila.precio_antes) : undefined,
     destacado: !!fila.destacado,
     openBox: !!fila.open_box,
+    agotado: !!fila.agotado,
     imagen: fila.imagen || '',
     concentracion: fila.concentracion || '',
   }
@@ -43,6 +44,7 @@ function haciaDB(p) {
     precio_antes: p.precioAntes ? Number(p.precioAntes) : null,
     destacado: !!p.destacado,
     open_box: !!p.openBox,
+    agotado: !!p.agotado,
     imagen: p.imagen || null,
     concentracion: p.concentracion || null,
     // Nota: las columnas descripcion, notas_salida/corazon/fondo, duracion,
@@ -109,8 +111,9 @@ export async function crearProducto(producto) {
 
 // Traduce errores comunes a algo accionable.
 function mensajeError(prefijo, error) {
-  if (error.message?.includes('open_box')) {
-    return 'Falta agregar la columna Open Box. Ejecuta supabase/open-box.sql en Supabase (SQL Editor).'
+  const m = error.message || ''
+  if (m.includes('open_box') || m.includes('agotado')) {
+    return 'Falta crear columnas nuevas en la base de datos. Ejecuta supabase/columnas-extra.sql en Supabase (SQL Editor).'
   }
   return `${prefijo}: ${error.message}`
 }

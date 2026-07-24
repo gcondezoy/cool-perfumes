@@ -445,6 +445,44 @@ ol, ul { list-style: none; }
   letter-spacing: 0.12em;
 }
 
+/* ---- Producto agotado ---- */
+.card-agotado .card-media { background: #d9d7d1; }
+.card-agotado .card-media img {
+  filter: grayscale(1) brightness(0.96);
+  opacity: 0.55;
+}
+.card-agotado:hover .card-media img { transform: none; }  /* sin zoom */
+.card-agotado .card-ver { display: none; }
+.card-agotado .card-nombre,
+.card-agotado .card-marca { color: var(--faint); }
+.card-agotado-tag {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 9px 24px;
+  border-radius: var(--r-pill);
+  background: rgba(58, 56, 50, 0.85);
+  color: #fff;
+  font-size: 0.74rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  backdrop-filter: blur(2px);
+}
+.btn-consultar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line);
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  transition: all 0.22s var(--ease);
+}
+.btn-consultar:hover { border-color: var(--wa); color: var(--wa); }
+.btn-consultar:active { transform: scale(0.95); }
+
 .card-body { padding: 18px 2px 0; display: flex; flex-direction: column; flex: 1; }
 .card-marca {
   font-size: 0.66rem;
@@ -669,7 +707,8 @@ ol, ul { list-style: none; }
 }
 .pm-sub-fila { display: flex; align-items: center; gap: 12px; margin-top: 6px; flex-wrap: wrap; }
 .pm-familia { color: var(--ink-soft); font-size: 0.88rem; }
-.pm-openbox {
+.pm-openbox,
+.pm-agotado {
   display: inline-flex;
   align-items: center;
   padding: 3px 11px;
@@ -680,6 +719,13 @@ ol, ul { list-style: none; }
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
+.pm-agotado { background: #6f6c64; }
+.pm-btn-agotado {
+  background: rgba(23, 21, 15, 0.09);
+  color: var(--faint);
+  cursor: not-allowed;
+}
+.pm-btn-agotado:active { transform: none; }
 
 .pm-precio { display: flex; align-items: baseline; gap: 12px; margin: 18px 0 20px; }
 .pm-precio-antes { color: var(--faint); text-decoration: line-through; font-size: 0.95rem; }

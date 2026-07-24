@@ -66,6 +66,8 @@ export default function App() {
 
   // --- Lógica del carrito ---
   const agregar = useCallback((producto) => {
+    // Seguridad: un producto agotado nunca entra al carrito.
+    if (producto.agotado) return
     setCarrito((prev) => {
       const existe = prev.find((p) => p.id === producto.id)
       if (existe) {

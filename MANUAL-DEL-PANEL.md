@@ -77,6 +77,16 @@ Si un perfume es **caja abierta / tester**, marca la casilla **"Open Box"** en e
 formulario. Aparecerá con una etiqueta *Open Box* en su tarjeta y en su ficha,
 para que el cliente sepa que es una presentación abierta.
 
+## Marcar un perfume como Agotado
+
+Cuando te quedes sin stock, marca la casilla **"Agotado"** en el formulario.
+En la tienda ese perfume se verá **en gris con la etiqueta "Agotado"** y el
+cliente **no podrá agregarlo al carrito**, pero sí podrá ver sus detalles y
+**consultar por WhatsApp** (por si quiere avisarle cuando vuelva a haber).
+
+No hace falta borrarlo: cuando vuelvas a tener stock, solo desmarca la casilla
+y queda disponible otra vez.
+
 ---
 
 ## Editar o eliminar

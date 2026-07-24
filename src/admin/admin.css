@@ -526,6 +526,7 @@
   color: var(--ink-soft);
 }
 .adm-pill-openbox { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.adm-pill-agotado { background: #6f6c64; color: var(--paper); border-color: #6f6c64; }
 .adm-acciones { display: flex; gap: 4px; justify-content: flex-end; }
 .adm-acciones button {
   display: grid; place-items: center;

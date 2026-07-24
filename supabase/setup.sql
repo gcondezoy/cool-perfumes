@@ -19,6 +19,7 @@ create table if not exists public.productos (
   precio_antes numeric,
   destacado    boolean not null default false,
   open_box     boolean not null default false,   -- caja abierta / tester
+  agotado      boolean not null default false,   -- sin stock
   imagen       text,
   -- Ficha completa (se muestra al hacer clic en el producto)
   descripcion   text,
@@ -42,6 +43,7 @@ alter table public.productos add column if not exists duracion      text;
 alter table public.productos add column if not exists estela        text;
 alter table public.productos add column if not exists ocasion       text;
 alter table public.productos add column if not exists open_box      boolean not null default false;
+alter table public.productos add column if not exists agotado       boolean not null default false;
 
 -- Índice para ordenar por fecha de creación
 create index if not exists productos_creado_en_idx

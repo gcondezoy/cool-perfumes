@@ -1,9 +1,9 @@
 import { useRef, useEffect, useState } from 'react'
-import { Plus, Check } from '@phosphor-icons/react'
+import { Plus, Check, WhatsappLogo } from '@phosphor-icons/react'
 import { marca as config, abreviarConcentracion } from '../config.js'
 
 export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index = 0 }) {
-  const { nombre, marca, notas, ml, precio, precioAntes, destacado, openBox, concentracion, imagen } =
+  const { nombre, marca, notas, ml, precio, precioAntes, destacado, openBox, agotado, concentracion, imagen } =
     producto
 
   const descuento = precioAntes
@@ -46,10 +46,20 @@ export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index
     setTimeout(() => setAgregado(false), 1200)
   }
 
+  const consultar = (e) => {
+    e.stopPropagation()
+    const mensaje = `¡Hola ${config.nombre}! 👋 Quisiera consultar por el ${marca} ${nombre}${ml ? ` (${ml} ml)` : ''}.`
+    window.open(
+      `https://wa.me/${config.whatsapp}?text=${encodeURIComponent(mensaje)}`,
+      '_blank',
+      'noopener',
+    )
+  }
+
   return (
     <article
       ref={ref}
-      className={`card reveal reveal-up ${visible ? 'is-visible' : ''}`}
+      className={`card reveal reveal-up ${visible ? 'is-visible' : ''} ${agotado ? 'card-agotado' : ''}`}
       style={{ transitionDelay: `${(index % 4) * 80}ms` }}
     >
       {/* Toda la zona de información abre la ficha completa */}
@@ -60,9 +70,15 @@ export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index
       >
         <div className="card-media">
           <img src={imagen} alt={`${marca} ${nombre}`} loading="lazy" />
-          {openBox && <span className="badge badge-openbox">Open Box</span>}
-          {!openBox && destacado && <span className="badge">Destacado</span>}
-          {descuento && <span className="badge badge-oferta">-{descuento}%</span>}
+          {agotado ? (
+            <span className="card-agotado-tag">Agotado</span>
+          ) : (
+            <>
+              {openBox && <span className="badge badge-openbox">Open Box</span>}
+              {!openBox && destacado && <span className="badge">Destacado</span>}
+              {descuento && <span className="badge badge-oferta">-{descuento}%</span>}
+            </>
+          )}
           <span className="card-ver">Ver detalles</span>
         </div>
 
@@ -76,7 +92,7 @@ export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index
 
       <div className="card-footer">
         <div className="precio">
-          {precioAntes && (
+          {precioAntes && !agotado && (
             <span className="precio-antes">
               {config.moneda} {precioAntes}
             </span>
@@ -86,23 +102,30 @@ export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index
           </span>
         </div>
 
-        <button
-          className={`btn btn-agregar ${agregado ? 'agregado' : ''}`}
-          onClick={handleAgregar}
-          aria-label={`Agregar ${marca} ${nombre} al carrito`}
-        >
-          {agregado ? (
-            <>
-              <Check size={16} weight="bold" />
-              Añadido
-            </>
-          ) : (
-            <>
-              <Plus size={16} weight="bold" />
-              Agregar
-            </>
-          )}
-        </button>
+        {agotado ? (
+          <button className="btn btn-consultar" onClick={consultar}>
+            <WhatsappLogo size={16} weight="fill" />
+            Consultar
+          </button>
+        ) : (
+          <button
+            className={`btn btn-agregar ${agregado ? 'agregado' : ''}`}
+            onClick={handleAgregar}
+            aria-label={`Agregar ${marca} ${nombre} al carrito`}
+          >
+            {agregado ? (
+              <>
+                <Check size={16} weight="bold" />
+                Añadido
+              </>
+            ) : (
+              <>
+                <Plus size={16} weight="bold" />
+                Agregar
+              </>
+            )}
+          </button>
+        )}
       </div>
     </article>
   )
