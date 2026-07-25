@@ -33,6 +33,18 @@ export const marca = {
   // Moneda usada en los precios.
   moneda: 'S/',
 
+  // -----------------------------------------------------------
+  //  DATOS LEGALES (aparecen en la política de privacidad)
+  //  ⚠️ COMPLETAR con los datos reales del negocio antes de publicar.
+  // -----------------------------------------------------------
+  legal: {
+    razonSocial: 'Cool Perfumes',      // Nombre o razón social del titular
+    ruc: '',                            // RUC (déjalo vacío si es persona natural sin RUC)
+    correoContacto: 'coolperfumes.pe@gmail.com', // Para ejercer derechos de datos
+    direccion: 'Lima, Perú',           // Dirección o distrito
+    ultimaActualizacion: '24 de julio de 2026',
+  },
+
   // El acceso al panel (/admin) se gestiona con Supabase Auth.
   // Los usuarios se crean en: Supabase -> Authentication -> Users.
 }

@@ -1091,6 +1091,143 @@ ol, ul { list-style: none; }
   .wa-fab { width: 52px; height: 52px; right: 18px; bottom: 18px; }
 }
 
+/* ---------- Aviso de cookies ---------- */
+.ck-banner {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 65;
+  width: min(440px, calc(100vw - 48px));
+  padding: 20px 22px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  box-shadow: 0 18px 50px -20px rgba(23, 21, 15, 0.45);
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+}
+.ck-visible { opacity: 1; transform: none; }
+
+.ck-titulo {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.ck-texto p { font-size: 0.86rem; line-height: 1.6; color: var(--ink-soft); }
+.ck-texto a { text-decoration: underline; text-underline-offset: 2px; }
+.ck-texto a:hover { color: var(--ink); }
+
+.ck-acciones { display: flex; gap: 10px; margin-top: 16px; }
+.ck-btn { flex: 1; padding: 11px 18px; font-size: 0.86rem; }
+.ck-btn-aceptar { background: var(--ink); color: var(--paper); }
+.ck-btn-aceptar:hover { background: #000; }
+.ck-btn-rechazar {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+.ck-btn-rechazar:hover { border-color: var(--ink); }
+
+/* En escritorio el aviso va abajo-izquierda y el botón de WhatsApp
+   abajo-derecha, así que no se estorban. */
+
+@media (max-width: 620px) {
+  .ck-banner { left: 14px; right: 14px; bottom: 14px; width: auto; padding: 18px; }
+  /* En móvil el aviso ocupa todo el ancho: escondemos el botón flotante
+     mientras esté visible para que no se superpongan. */
+  body:has(.ck-banner) .wa-fab {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* ---------- Páginas legales ---------- */
+.legal-pagina { padding: 48px 0 80px; background: var(--paper); min-height: 100dvh; }
+.legal-contenido { max-width: 760px; }
+.legal-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.84rem;
+  color: var(--ink-soft);
+  margin-bottom: 34px;
+  transition: color 0.2s var(--ease);
+}
+.legal-volver:hover { color: var(--ink); }
+
+.legal-titulo {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4.5vw, 2.9rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.08;
+}
+.legal-fecha { font-size: 0.8rem; color: var(--faint); margin-top: 8px; }
+.legal-intro {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--ink-soft);
+  margin-top: 24px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--line);
+}
+
+.legal-seccion { margin-top: 34px; }
+.legal-seccion h2 {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.legal-seccion h3 {
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--faint);
+  margin: 20px 0 8px;
+}
+.legal-seccion p {
+  font-size: 0.94rem;
+  line-height: 1.75;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+.legal-seccion ul { margin: 0 0 14px; padding-left: 4px; }
+.legal-seccion li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 0.94rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  margin-bottom: 7px;
+}
+.legal-seccion li::before {
+  content: '';
+  position: absolute;
+  left: 2px; top: 0.72em;
+  width: 5px; height: 1px;
+  background: var(--accent);
+}
+.legal-seccion strong { color: var(--ink); font-weight: 500; }
+.legal-seccion a { text-decoration: underline; text-underline-offset: 2px; }
+.legal-seccion a:hover { color: var(--accent); }
+
+.legal-boton-enlace {
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.legal-cta { margin-top: 44px; }
+
+.footer-legal { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.footer-legal a { transition: color 0.2s var(--ease); }
+.footer-legal a:hover { color: var(--ink); text-decoration: underline; }
+
 /* ---------- Pantalla de error ---------- */
 .err-pantalla {
   min-height: 100dvh;

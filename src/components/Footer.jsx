@@ -71,7 +71,11 @@ export default function Footer() {
         <span>
           © {new Date().getFullYear()} {marca.nombre}
         </span>
-        <span>Tienda de perfumes · Lima, Perú</span>
+        <span className="footer-legal">
+          <a href="/privacidad">Política de privacidad</a>
+          <span aria-hidden="true">·</span>
+          Tienda de perfumes · Lima, Perú
+        </span>
       </div>
     </footer>
   )
