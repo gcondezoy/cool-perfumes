@@ -12,6 +12,9 @@ export default function Catalogo({
   onAbrirDetalle,
   cargando,
 }) {
+  // El contador no considera los productos agotados.
+  const disponibles = productos.filter((p) => !p.agotado).length
+
   return (
     <section className="catalogo" id="catalogo">
       <div className="container">
@@ -19,8 +22,8 @@ export default function Catalogo({
           <div>
             <h2 className="section-title">La colección</h2>
             <p className="section-sub">
-              {productos.length}{' '}
-              {productos.length === 1 ? 'fragancia' : 'fragancias'} disponibles
+              {disponibles}{' '}
+              {disponibles === 1 ? 'fragancia disponible' : 'fragancias disponibles'}
             </p>
           </div>
 
