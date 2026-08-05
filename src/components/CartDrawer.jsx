@@ -19,12 +19,12 @@ export default function CartDrawer({
     // El código permite ubicar este pedido en el panel al recibir el WhatsApp.
     const codigo = generarCodigo()
 
-    const lineas = carrito.map(
-      (p) =>
-        `• ${p.cantidad} × ${p.marca} ${p.nombre} (${p.ml} ml) - ${marca.moneda} ${
-          p.precio * p.cantidad
-        }`,
-    )
+    const lineas = carrito.map((p) => {
+      const presentacion = p.textoPresentacion || `${p.ml} ml`
+      return `• ${p.cantidad} × ${p.marca} ${p.nombre} (${presentacion}) - ${marca.moneda} ${
+        p.precio * p.cantidad
+      }`
+    })
 
     const mensaje = [
       marca.saludoPedido,
@@ -77,24 +77,24 @@ export default function CartDrawer({
           <>
             <ul className="drawer-items">
               {carrito.map((p) => (
-                <li key={p.id} className="drawer-item">
+                <li key={p.lineaId || p.id} className="drawer-item">
                   <img src={p.imagen} alt="" className="drawer-thumb" />
                   <div className="drawer-item-info">
                     <p className="drawer-item-marca">{p.marca}</p>
                     <p className="drawer-item-nombre">{p.nombre}</p>
                     <p className="drawer-item-meta">
-                      {p.ml} ml · {marca.moneda} {p.precio}
+                      {p.textoPresentacion || `${p.ml} ml`} · {marca.moneda} {p.precio}
                     </p>
                     <div className="stepper">
                       <button
-                        onClick={() => onCambiarCantidad(p.id, -1)}
+                        onClick={() => onCambiarCantidad(p.lineaId, -1)}
                         aria-label="Quitar una unidad"
                       >
                         <Minus size={14} weight="bold" />
                       </button>
                       <span>{p.cantidad}</span>
                       <button
-                        onClick={() => onCambiarCantidad(p.id, 1)}
+                        onClick={() => onCambiarCantidad(p.lineaId, 1)}
                         aria-label="Agregar una unidad"
                       >
                         <Plus size={14} weight="bold" />
@@ -107,7 +107,7 @@ export default function CartDrawer({
                     </span>
                     <button
                       className="icon-btn icon-btn-sm"
-                      onClick={() => onQuitar(p.id)}
+                      onClick={() => onQuitar(p.lineaId)}
                       aria-label={`Eliminar ${p.nombre}`}
                     >
                       <Trash size={16} weight="light" />

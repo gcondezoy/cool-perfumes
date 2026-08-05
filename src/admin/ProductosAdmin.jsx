@@ -16,6 +16,8 @@ const VACIO = {
   ml: 100,
   precio: 0,
   precioAntes: '',
+  decant5ml: '',
+  decant10ml: '',
   destacado: false,
   openBox: false,
   agotado: false,
@@ -86,7 +88,15 @@ export default function ProductosAdmin({
   }
 
   const abrirEditar = (p) => {
-    setForm({ ...VACIO, ...p, precioAntes: p.precioAntes || '' })
+    setForm({
+      ...VACIO,
+      ...p,
+      // Los campos opcionales vacíos deben ser '' y no undefined,
+      // para que React los trate como campos controlados.
+      precioAntes: p.precioAntes || '',
+      decant5ml: p.decant5ml || '',
+      decant10ml: p.decant10ml || '',
+    })
     setErrorForm('')
     setEditando(p.id)
   }
@@ -128,6 +138,9 @@ export default function ProductosAdmin({
       ml: Number(form.ml) || 0,
       precio: Number(form.precio) || 0,
       precioAntes: form.precioAntes ? Number(form.precioAntes) : undefined,
+      // Vacío = ese perfume no se vende en esa medida
+      decant5ml: form.decant5ml ? Number(form.decant5ml) : undefined,
+      decant10ml: form.decant10ml ? Number(form.decant10ml) : undefined,
     }
     if (!limpio.precioAntes) delete limpio.precioAntes
 
@@ -329,6 +342,39 @@ export default function ProductosAdmin({
               <label className="adm-campo">
                 <span>Precio antes (opcional)</span>
                 <input className="adm-input" type="number" min="0" value={form.precioAntes} onChange={cambiar('precioAntes')} placeholder="Para mostrar oferta" />
+              </label>
+
+              {/* ---- Decants ---- */}
+              <div className="adm-separador">
+                <span>Decants (opcional)</span>
+                <p>
+                  Si vendes este perfume en decant, pon el precio. Déjalo vacío
+                  si solo lo vendes en frasco completo.
+                </p>
+              </div>
+
+              <label className="adm-campo">
+                <span>Precio decant 5 ml ({marca.moneda})</span>
+                <input
+                  className="adm-input"
+                  type="number"
+                  min="0"
+                  value={form.decant5ml}
+                  onChange={cambiar('decant5ml')}
+                  placeholder="Vacío = no disponible"
+                />
+              </label>
+
+              <label className="adm-campo">
+                <span>Precio decant 10 ml ({marca.moneda})</span>
+                <input
+                  className="adm-input"
+                  type="number"
+                  min="0"
+                  value={form.decant10ml}
+                  onChange={cambiar('decant10ml')}
+                  placeholder="Vacío = no disponible"
+                />
               </label>
 
               {/* ---- Imagen del producto ---- */}

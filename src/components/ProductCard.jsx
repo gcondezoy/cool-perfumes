@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
 import { Plus, Check, WhatsappLogo } from '@phosphor-icons/react'
 import { marca as config, abreviarConcentracion } from '../config.js'
+import { tieneDecants, precioDesdeDecant } from '../lib/presentaciones.js'
 
 export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index = 0 }) {
   const { nombre, marca, notas, ml, precio, precioAntes, destacado, openBox, agotado, concentracion, imagen } =
@@ -15,6 +16,9 @@ export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index
     concentracion && abreviarConcentracion(concentracion),
     ml && `${ml} ml`,
   ].filter(Boolean).join(' · ')
+
+  const hayDecant = tieneDecants(producto)
+  const precioDecant = precioDesdeDecant(producto)
 
   const ref = useRef(null)
   const [visible, setVisible] = useState(false)
@@ -86,6 +90,11 @@ export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index
           <p className="card-marca">{marca}</p>
           <h3 className="card-nombre">{nombre}</h3>
           <p className="card-familia">{meta}</p>
+          {hayDecant && !agotado && (
+            <p className="card-decant">
+              También en decant desde {config.moneda} {precioDecant}
+            </p>
+          )}
           <p className="card-notas">{notas}</p>
         </div>
       </button>

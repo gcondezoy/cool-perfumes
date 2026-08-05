@@ -65,6 +65,8 @@ export async function registrarPedido({ codigo, carrito, total }) {
     ml: p.ml,
     precio: p.precio,
     cantidad: p.cantidad,
+    // Frasco completo o decant (para que se vea en el panel de pedidos)
+    presentacion: p.textoPresentacion || `${p.ml} ml`,
   }))
   const cantidad = carrito.reduce((s, p) => s + p.cantidad, 0)
 

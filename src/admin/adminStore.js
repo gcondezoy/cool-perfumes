@@ -27,6 +27,9 @@ function desdeDB(fila) {
     destacado: !!fila.destacado,
     openBox: !!fila.open_box,
     agotado: !!fila.agotado,
+    // Decants: null/vacío = ese perfume no se vende en esa medida
+    decant5ml: fila.decant_5ml != null ? Number(fila.decant_5ml) : undefined,
+    decant10ml: fila.decant_10ml != null ? Number(fila.decant_10ml) : undefined,
     imagen: fila.imagen || '',
     concentracion: fila.concentracion || '',
   }
@@ -45,6 +48,8 @@ function haciaDB(p) {
     destacado: !!p.destacado,
     open_box: !!p.openBox,
     agotado: !!p.agotado,
+    decant_5ml: p.decant5ml ? Number(p.decant5ml) : null,
+    decant_10ml: p.decant10ml ? Number(p.decant10ml) : null,
     imagen: p.imagen || null,
     concentracion: p.concentracion || null,
     // Nota: las columnas descripcion, notas_salida/corazon/fondo, duracion,
@@ -112,6 +117,9 @@ export async function crearProducto(producto) {
 // Traduce errores comunes a algo accionable.
 function mensajeError(prefijo, error) {
   const m = error.message || ''
+  if (m.includes('decant')) {
+    return 'Falta agregar los decants a la base de datos. Ejecuta supabase/decants.sql en Supabase (SQL Editor).'
+  }
   if (m.includes('open_box') || m.includes('agotado')) {
     return 'Falta crear columnas nuevas en la base de datos. Ejecuta supabase/columnas-extra.sql en Supabase (SQL Editor).'
   }

@@ -11,9 +11,15 @@ export default function Catalogo({
   onAgregar,
   onAbrirDetalle,
   cargando,
+  hayAlgunDecant,
 }) {
   // El contador no considera los productos agotados.
   const disponibles = productos.filter((p) => !p.agotado).length
+
+  // El filtro "Decants" solo se muestra si hay perfumes que se vendan así.
+  const filtrosVisibles = categorias.filter(
+    (c) => c.id !== 'decants' || hayAlgunDecant,
+  )
 
   return (
     <section className="catalogo" id="catalogo">
@@ -38,8 +44,8 @@ export default function Catalogo({
           </label>
         </div>
 
-        <div className="filtros" role="tablist" aria-label="Filtrar por género">
-          {categorias.map((c) => (
+        <div className="filtros" role="tablist" aria-label="Filtrar productos">
+          {filtrosVisibles.map((c) => (
             <button
               key={c.id}
               role="tab"

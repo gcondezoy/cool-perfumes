@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { listarProductos, getProductosCache, suscribir } from './admin/adminStore.js'
+import { itemDeCarrito, tieneDecants } from './lib/presentaciones.js'
 import { categorias } from './config.js'
 
 const CLAVE_CARRITO = 'coolperfumes_carrito_v1'
@@ -20,7 +21,13 @@ export default function App() {
     try {
       const guardado = localStorage.getItem(CLAVE_CARRITO)
       const lista = guardado ? JSON.parse(guardado) : []
-      return Array.isArray(lista) ? lista : []
+      if (!Array.isArray(lista)) return []
+      // Compatibilidad con carritos guardados antes de existir los decants.
+      return lista.map((p) => ({
+        ...p,
+        presentacion: p.presentacion || 'frasco',
+        lineaId: p.lineaId || `${p.id}::frasco`,
+      }))
     } catch {
       return []
     }
@@ -65,31 +72,34 @@ export default function App() {
   }, [])
 
   // --- Lógica del carrito ---
-  const agregar = useCallback((producto) => {
+  // Un mismo perfume puede estar en el carrito en frasco y en decant:
+  // por eso cada línea se identifica con "lineaId", no solo con el id.
+  const agregar = useCallback((producto, presentacion) => {
     // Seguridad: un producto agotado nunca entra al carrito.
     if (producto.agotado) return
+    const item = itemDeCarrito(producto, presentacion)
     setCarrito((prev) => {
-      const existe = prev.find((p) => p.id === producto.id)
+      const existe = prev.find((p) => p.lineaId === item.lineaId)
       if (existe) {
         return prev.map((p) =>
-          p.id === producto.id ? { ...p, cantidad: p.cantidad + 1 } : p,
+          p.lineaId === item.lineaId ? { ...p, cantidad: p.cantidad + 1 } : p,
         )
       }
-      return [...prev, { ...producto, cantidad: 1 }]
+      return [...prev, { ...item, cantidad: 1 }]
     })
     setCarritoAbierto(true)
   }, [])
 
-  const cambiarCantidad = useCallback((id, delta) => {
+  const cambiarCantidad = useCallback((lineaId, delta) => {
     setCarrito((prev) =>
       prev
-        .map((p) => (p.id === id ? { ...p, cantidad: p.cantidad + delta } : p))
+        .map((p) => (p.lineaId === lineaId ? { ...p, cantidad: p.cantidad + delta } : p))
         .filter((p) => p.cantidad > 0),
     )
   }, [])
 
-  const quitar = useCallback((id) => {
-    setCarrito((prev) => prev.filter((p) => p.id !== id))
+  const quitar = useCallback((lineaId) => {
+    setCarrito((prev) => prev.filter((p) => p.lineaId !== lineaId))
   }, [])
 
   const vaciar = useCallback(() => setCarrito([]), [])
@@ -108,6 +118,9 @@ export default function App() {
     [carrito],
   )
 
+  // El filtro "Decants" solo tiene sentido si algún perfume se vende así.
+  const hayAlgunDecant = useMemo(() => productos.some(tieneDecants), [productos])
+
   // Filtrar desde el menú (Mujer / Hombre) y llevar al catálogo.
   const filtrarDesdeNav = useCallback((genero) => {
     setFiltro(genero)
@@ -123,7 +136,10 @@ export default function App() {
     const q = busqueda.trim().toLowerCase()
     return productos
       .filter((p) => {
-        const coincideGenero = filtro === 'todos' || p.genero === filtro
+        const coincideGenero =
+          filtro === 'todos' ? true
+          : filtro === 'decants' ? tieneDecants(p)
+          : p.genero === filtro
         const coincideBusqueda =
           !q ||
           p.nombre.toLowerCase().includes(q) ||
@@ -159,6 +175,7 @@ export default function App() {
           onAgregar={agregar}
           onAbrirDetalle={setDetalle}
           cargando={cargando}
+          hayAlgunDecant={hayAlgunDecant}
         />
         <ComoComprar />
       </main>

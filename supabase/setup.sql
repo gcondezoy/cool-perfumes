@@ -44,6 +44,8 @@ alter table public.productos add column if not exists estela        text;
 alter table public.productos add column if not exists ocasion       text;
 alter table public.productos add column if not exists open_box      boolean not null default false;
 alter table public.productos add column if not exists agotado       boolean not null default false;
+alter table public.productos add column if not exists decant_5ml    numeric;
+alter table public.productos add column if not exists decant_10ml   numeric;
 
 -- Índice para ordenar por fecha de creación
 create index if not exists productos_creado_en_idx

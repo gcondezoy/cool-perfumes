@@ -1,10 +1,17 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { X, Plus, WhatsappLogo } from '@phosphor-icons/react'
 import { marca as config, abreviarConcentracion } from '../config.js'
+import { presentacionesDe, etiquetaPresentacion } from '../lib/presentaciones.js'
 
 export default function ProductoModal({ producto, onCerrar, onAgregar }) {
   const cerrarRef = useRef(null)
   const modalRef = useRef(null)
+  const [claveSel, setClaveSel] = useState('frasco')
+
+  // Al abrir otro perfume, volver siempre al frasco completo.
+  useEffect(() => {
+    setClaveSel('frasco')
+  }, [producto?.id])
 
   // Cerrar con Escape y bloquear el scroll del fondo.
   useEffect(() => {
@@ -29,29 +36,32 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
 
   if (!producto) return null
 
-  const {
-    nombre, marca, ml, precio, precioAntes, imagen, concentracion, genero, openBox, agotado,
-  } = producto
+  const { nombre, marca, imagen, concentracion, genero, openBox, agotado } = producto
 
-  const descuento = precioAntes
-    ? Math.round(((precioAntes - precio) / precioAntes) * 100)
+  const opciones = presentacionesDe(producto)
+  const presentacion = opciones.find((o) => o.clave === claveSel) || opciones[0]
+  const hayVariasPresentaciones = opciones.length > 1
+
+  const descuento = presentacion.precioAntes
+    ? Math.round(((presentacion.precioAntes - presentacion.precio) / presentacion.precioAntes) * 100)
     : null
 
   const ficha = [
     { etiqueta: 'Marca', valor: marca },
     { etiqueta: 'Concentración', valor: concentracion },
-    { etiqueta: 'Contenido', valor: ml ? `${ml} ml` : null },
+    { etiqueta: 'Contenido', valor: presentacion.ml ? `${presentacion.ml} ml` : null },
     { etiqueta: 'Género', valor: genero ? genero.charAt(0).toUpperCase() + genero.slice(1) : null },
   ].filter((d) => d.valor)
 
-  // Subtítulo bajo el nombre: "EDP · 100 ml" (o solo lo que exista).
+  // Subtítulo bajo el nombre: refleja la presentación elegida ("EDP · 10 ml").
   const subtitulo = [
     concentracion && abreviarConcentracion(concentracion),
-    ml && `${ml} ml`,
+    presentacion.detalle,
   ].filter(Boolean).join(' · ')
 
   const pedirPorWhatsApp = () => {
-    const mensaje = `¡Hola ${config.nombre}! 👋 Quisiera consultar por el ${marca} ${nombre} (${ml} ml).`
+    const texto = etiquetaPresentacion(presentacion)
+    const mensaje = `¡Hola ${config.nombre}! 👋 Quisiera consultar por el ${marca} ${nombre}${texto ? ` (${texto})` : ''}.`
     window.open(
       `https://wa.me/${config.whatsapp}?text=${encodeURIComponent(mensaje)}`,
       '_blank',
@@ -91,11 +101,45 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
             </div>
 
             <div className="pm-precio">
-              {precioAntes && (
-                <span className="pm-precio-antes">{config.moneda} {precioAntes}</span>
+              {presentacion.precioAntes && (
+                <span className="pm-precio-antes">{config.moneda} {presentacion.precioAntes}</span>
               )}
-              <span className="pm-precio-actual">{config.moneda} {precio}</span>
+              <span className="pm-precio-actual">{config.moneda} {presentacion.precio}</span>
             </div>
+
+            {/* Selector de presentación (solo si hay decants) */}
+            {hayVariasPresentaciones && (
+              <section className="pm-bloque">
+                <h3 className="pm-bloque-titulo">Elige tu presentación</h3>
+                <div className="pm-tallas" role="radiogroup" aria-label="Presentación">
+                  {opciones.map((o) => {
+                    const activa = o.clave === presentacion.clave
+                    return (
+                      <button
+                        key={o.clave}
+                        type="button"
+                        role="radio"
+                        aria-checked={activa}
+                        className={`pm-talla ${activa ? 'pm-talla-activa' : ''}`}
+                        onClick={() => setClaveSel(o.clave)}
+                      >
+                        <span className="pm-talla-tipo">
+                          {o.clave === 'frasco' ? 'Frasco' : 'Decant'}
+                        </span>
+                        <span className="pm-talla-ml">{o.detalle}</span>
+                        <span className="pm-talla-precio">
+                          {config.moneda} {o.precio}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+                <p className="pm-talla-nota">
+                  Los decants son una porción del perfume original en un
+                  atomizador, ideales para probarlo o llevarlo contigo.
+                </p>
+              </section>
+            )}
 
             {ficha.length > 0 && (
               <section className="pm-bloque">
@@ -120,7 +164,7 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
                 <button
                   className="btn btn-primary pm-btn"
                   onClick={() => {
-                    onAgregar(producto)
+                    onAgregar(producto, presentacion)
                     onCerrar()
                   }}
                 >

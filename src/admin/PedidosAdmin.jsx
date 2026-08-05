@@ -135,7 +135,7 @@ export default function PedidosAdmin({ pedidos, onCambiarEstado, onEliminar }) {
                         <span className="ped-detalle-cant">{it.cantidad} ×</span>
                         <span className="ped-detalle-nombre">
                           <em>{it.marca}</em> {it.nombre}
-                          {it.ml ? ` · ${it.ml} ml` : ''}
+                          {it.presentacion ? ` · ${it.presentacion}` : it.ml ? ` · ${it.ml} ml` : ''}
                         </span>
                         <span className="ped-detalle-precio">
                           {marca.moneda} {it.precio * it.cantidad}

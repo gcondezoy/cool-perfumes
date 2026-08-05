@@ -77,6 +77,40 @@ Si un perfume es **caja abierta / tester**, marca la casilla **"Open Box"** en e
 formulario. Aparecerá con una etiqueta *Open Box* en su tarjeta y en su ficha,
 para que el cliente sepa que es una presentación abierta.
 
+## Vender un perfume en decant (5 ml y 10 ml)
+
+En el formulario del producto, busca la sección **"Decants"** y pon el precio:
+
+- **Precio decant 5 ml** → por ejemplo `60`
+- **Precio decant 10 ml** → por ejemplo `110`
+
+**Deja vacío el que no vendas.** Si dejas los dos vacíos, ese perfume solo se
+ofrece en frasco completo.
+
+### Qué ve el cliente
+- En la tarjeta del catálogo aparece un aviso: *"También en decant desde S/ 60"*.
+- Al abrir el perfume puede **elegir la presentación** (Frasco / Decant 10 ml /
+  Decant 5 ml) y el precio cambia solo.
+- En el catálogo se activa un filtro **"Decants"** para ver de un vistazo todos
+  los perfumes que ofreces en esa medida. Ese filtro solo aparece cuando al
+  menos un perfume tiene precio de decant.
+
+### En el pedido
+Cuando te llegue el WhatsApp, cada línea dice qué presentación pidió:
+
+```
+• 1 × MFK Baccarat Rouge 540 (Decant 5 ml) - S/ 60
+• 1 × Dior Sauvage (100 ml) - S/ 429
+```
+
+Un mismo perfume puede ir en el carrito en frasco y en decant a la vez, como
+dos líneas separadas.
+
+> **Nota:** si el frasco completo está en oferta, el descuento **no** se aplica
+> al decant (el decant mantiene el precio que pusiste).
+
+---
+
 ## Marcar un perfume como Agotado
 
 Cuando te quedes sin stock, marca la casilla **"Agotado"** en el formulario.
