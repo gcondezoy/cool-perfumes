@@ -748,6 +748,12 @@ ol, ul { list-style: none; }
 .pm-precio { display: flex; align-items: baseline; gap: 12px; margin: 18px 0 20px; }
 .pm-precio-antes { color: var(--faint); text-decoration: line-through; font-size: 0.95rem; }
 .pm-precio-actual { font-size: 1.6rem; font-weight: 500; }
+.pm-precio-nota {
+  font-size: 0.76rem;
+  letter-spacing: 0.02em;
+  color: var(--faint);
+  padding-bottom: 3px;
+}
 
 .pm-bloque { margin-top: 26px; }
 .pm-bloque-titulo {

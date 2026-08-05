@@ -49,14 +49,18 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
   const ficha = [
     { etiqueta: 'Marca', valor: marca },
     { etiqueta: 'Concentración', valor: concentracion },
-    { etiqueta: 'Contenido', valor: presentacion.ml ? `${presentacion.ml} ml` : null },
+    // Si hay selector de presentación, el tamaño ya se ve ahí: no lo repetimos.
+    ...(hayVariasPresentaciones
+      ? []
+      : [{ etiqueta: 'Contenido', valor: producto.ml ? `${producto.ml} ml` : null }]),
     { etiqueta: 'Género', valor: genero ? genero.charAt(0).toUpperCase() + genero.slice(1) : null },
   ].filter((d) => d.valor)
 
-  // Subtítulo bajo el nombre: refleja la presentación elegida ("EDP · 10 ml").
+  // El subtítulo identifica al PERFUME (el frasco original), no cambia al
+  // elegir un decant: así no se pierde de vista qué producto es.
   const subtitulo = [
     concentracion && abreviarConcentracion(concentracion),
-    presentacion.detalle,
+    producto.ml && `${producto.ml} ml`,
   ].filter(Boolean).join(' · ')
 
   const pedirPorWhatsApp = () => {
@@ -105,6 +109,14 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
                 <span className="pm-precio-antes">{config.moneda} {presentacion.precioAntes}</span>
               )}
               <span className="pm-precio-actual">{config.moneda} {presentacion.precio}</span>
+              {/* Aclara a qué presentación corresponde el precio mostrado */}
+              {hayVariasPresentaciones && (
+                <span className="pm-precio-nota">
+                  {presentacion.clave === 'frasco'
+                    ? 'Frasco completo'
+                    : `Decant ${presentacion.detalle}`}
+                </span>
+              )}
             </div>
 
             {/* Selector de presentación (solo si hay decants) */}
