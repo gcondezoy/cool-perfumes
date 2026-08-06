@@ -1,12 +1,13 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { listarProductos, getProductosCache, suscribir } from './admin/adminStore.js'
-import { itemDeCarrito, tieneDecants } from './lib/presentaciones.js'
+import { itemDeCarrito } from './lib/presentaciones.js'
 import { categorias } from './config.js'
 
 const CLAVE_CARRITO = 'coolperfumes_carrito_v1'
 import Header from './components/Header.jsx'
 import Hero from './components/Hero.jsx'
 import Catalogo from './components/Catalogo.jsx'
+import SeccionDecants from './components/SeccionDecants.jsx'
 import ComoComprar from './components/ComoComprar.jsx'
 import ProductoModal from './components/ProductoModal.jsx'
 import CartDrawer from './components/CartDrawer.jsx'
@@ -118,9 +119,6 @@ export default function App() {
     [carrito],
   )
 
-  // El filtro "Decants" solo tiene sentido si algún perfume se vende así.
-  const hayAlgunDecant = useMemo(() => productos.some(tieneDecants), [productos])
-
   // Filtrar desde el menú (Mujer / Hombre) y llevar al catálogo.
   const filtrarDesdeNav = useCallback((genero) => {
     setFiltro(genero)
@@ -136,10 +134,7 @@ export default function App() {
     const q = busqueda.trim().toLowerCase()
     return productos
       .filter((p) => {
-        const coincideGenero =
-          filtro === 'todos' ? true
-          : filtro === 'decants' ? tieneDecants(p)
-          : p.genero === filtro
+        const coincideGenero = filtro === 'todos' || p.genero === filtro
         const coincideBusqueda =
           !q ||
           p.nombre.toLowerCase().includes(q) ||
@@ -175,8 +170,8 @@ export default function App() {
           onAgregar={agregar}
           onAbrirDetalle={setDetalle}
           cargando={cargando}
-          hayAlgunDecant={hayAlgunDecant}
         />
+        <SeccionDecants productos={productos} onAgregar={agregar} />
         <ComoComprar />
       </main>
 

@@ -92,7 +92,7 @@ export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index
           <p className="card-familia">{meta}</p>
           {hayDecant && !agotado && (
             <p className="card-decant">
-              También en decant desde {config.moneda} {precioDecant}
+              También en decant · desde {config.moneda} {precioDecant}
             </p>
           )}
           <p className="card-notas">{notas}</p>

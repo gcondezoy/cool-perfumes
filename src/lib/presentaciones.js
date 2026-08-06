@@ -1,77 +1,68 @@
 // =============================================================
-//  PRESENTACIONES DE UN PERFUME
-//  Un mismo perfume puede venderse en frasco completo y, si el
-//  administrador le puso precio, también en decant de 10 ml y/o 5 ml.
+//  PERFUMES Y DECANTS
+//  La tienda separa dos secciones para que no haya confusión:
+//   - "Perfumes": el frasco completo.
+//   - "Decants": porciones de 3 ml y 5 ml del mismo perfume.
+//  Un producto se carga una sola vez; si tiene precio de decant,
+//  aparece además en la sección de decants.
 // =============================================================
 
-// Devuelve las presentaciones disponibles de un producto.
-// Siempre incluye el frasco; los decants solo si tienen precio.
-export function presentacionesDe(producto) {
+// Tamaños de decant que maneja la tienda.
+export const TAMANOS_DECANT = [3, 5]
+
+// Presentación del frasco completo (sección "Perfumes").
+export function presentacionFrasco(producto) {
+  return {
+    clave: 'frasco',
+    etiqueta: 'Frasco completo',
+    detalle: producto?.ml ? `${producto.ml} ml` : '',
+    ml: producto?.ml,
+    precio: Number(producto?.precio) || 0,
+    precioAntes: producto?.precioAntes,
+  }
+}
+
+// Decants disponibles de un perfume (solo los que tienen precio).
+export function decantsDe(producto) {
   if (!producto) return []
+  const porTamano = { 3: producto.decant3ml, 5: producto.decant5ml }
 
-  const lista = [
-    {
-      clave: 'frasco',
-      etiqueta: 'Frasco completo',
-      detalle: producto.ml ? `${producto.ml} ml` : '',
-      ml: producto.ml,
-      precio: Number(producto.precio) || 0,
-      precioAntes: producto.precioAntes,
-    },
-  ]
-
-  if (producto.decant10ml) {
-    lista.push({
-      clave: '10ml',
-      etiqueta: 'Decant',
-      detalle: '10 ml',
-      ml: 10,
-      precio: Number(producto.decant10ml),
-    })
-  }
-
-  if (producto.decant5ml) {
-    lista.push({
-      clave: '5ml',
-      etiqueta: 'Decant',
-      detalle: '5 ml',
-      ml: 5,
-      precio: Number(producto.decant5ml),
-    })
-  }
-
-  return lista
+  return TAMANOS_DECANT.filter((ml) => porTamano[ml]).map((ml) => ({
+    clave: `${ml}ml`,
+    etiqueta: 'Decant',
+    detalle: `${ml} ml`,
+    ml,
+    precio: Number(porTamano[ml]),
+  }))
 }
 
 export function tieneDecants(producto) {
-  return Boolean(producto?.decant5ml || producto?.decant10ml)
+  return decantsDe(producto).length > 0
 }
 
-// Precio más bajo entre los decants (para el aviso "desde S/ X").
+// Precio más bajo entre los decants (para el "desde S/ X").
 export function precioDesdeDecant(producto) {
-  const precios = [producto?.decant5ml, producto?.decant10ml]
-    .filter(Boolean)
-    .map(Number)
+  const precios = decantsDe(producto).map((d) => d.precio)
   return precios.length ? Math.min(...precios) : null
 }
 
-// Texto que acompaña al producto en el carrito y en el pedido de WhatsApp.
+// Texto que acompaña al producto en el carrito y en el pedido.
 export function etiquetaPresentacion(presentacion) {
-  if (!presentacion || presentacion.clave === 'frasco') {
-    return presentacion?.detalle || ''
-  }
-  return `Decant ${presentacion.detalle}`
+  if (!presentacion) return ''
+  return presentacion.clave === 'frasco'
+    ? presentacion.detalle
+    : `Decant ${presentacion.detalle}`
 }
 
 // Identificador de línea del carrito: permite tener el mismo perfume
-// en frasco y en decant como dos líneas distintas.
+// en frasco y en decant como líneas distintas.
 export function idLinea(producto, clavePresentacion) {
   return `${producto.id}::${clavePresentacion || 'frasco'}`
 }
 
 // Construye el objeto que se guarda en el carrito.
 export function itemDeCarrito(producto, presentacion) {
-  const p = presentacion || presentacionesDe(producto)[0]
+  const p = presentacion || presentacionFrasco(producto)
   return {
     ...producto,
     // El precio y los ml pasan a ser los de la presentación elegida,

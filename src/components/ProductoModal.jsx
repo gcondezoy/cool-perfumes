@@ -1,17 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
-import { X, Plus, WhatsappLogo } from '@phosphor-icons/react'
+import { useEffect, useRef } from 'react'
+import { X, Plus, WhatsappLogo, Eyedropper } from '@phosphor-icons/react'
 import { marca as config, abreviarConcentracion } from '../config.js'
-import { presentacionesDe, etiquetaPresentacion } from '../lib/presentaciones.js'
+import { presentacionFrasco, precioDesdeDecant } from '../lib/presentaciones.js'
 
 export default function ProductoModal({ producto, onCerrar, onAgregar }) {
   const cerrarRef = useRef(null)
   const modalRef = useRef(null)
-  const [claveSel, setClaveSel] = useState('frasco')
-
-  // Al abrir otro perfume, volver siempre al frasco completo.
-  useEffect(() => {
-    setClaveSel('frasco')
-  }, [producto?.id])
 
   // Cerrar con Escape y bloquear el scroll del fondo.
   useEffect(() => {
@@ -36,11 +30,12 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
 
   if (!producto) return null
 
-  const { nombre, marca, imagen, concentracion, genero, openBox, agotado } = producto
+  const { nombre, marca, ml, imagen, concentracion, genero, openBox, agotado } = producto
 
-  const opciones = presentacionesDe(producto)
-  const presentacion = opciones.find((o) => o.clave === claveSel) || opciones[0]
-  const hayVariasPresentaciones = opciones.length > 1
+  // Esta ficha es siempre del frasco completo: los decants tienen su
+  // propia sección, para que el cliente no confunda lo que está comprando.
+  const presentacion = presentacionFrasco(producto)
+  const desdeDecant = precioDesdeDecant(producto)
 
   const descuento = presentacion.precioAntes
     ? Math.round(((presentacion.precioAntes - presentacion.precio) / presentacion.precioAntes) * 100)
@@ -49,23 +44,28 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
   const ficha = [
     { etiqueta: 'Marca', valor: marca },
     { etiqueta: 'Concentración', valor: concentracion },
-    // Si hay selector de presentación, el tamaño ya se ve ahí: no lo repetimos.
-    ...(hayVariasPresentaciones
-      ? []
-      : [{ etiqueta: 'Contenido', valor: producto.ml ? `${producto.ml} ml` : null }]),
+    { etiqueta: 'Contenido', valor: ml ? `${ml} ml` : null },
     { etiqueta: 'Género', valor: genero ? genero.charAt(0).toUpperCase() + genero.slice(1) : null },
   ].filter((d) => d.valor)
 
-  // El subtítulo identifica al PERFUME (el frasco original), no cambia al
-  // elegir un decant: así no se pierde de vista qué producto es.
   const subtitulo = [
     concentracion && abreviarConcentracion(concentracion),
-    producto.ml && `${producto.ml} ml`,
+    ml && `${ml} ml`,
   ].filter(Boolean).join(' · ')
 
+  const irADecants = () => {
+    onCerrar()
+    setTimeout(() => {
+      const el = document.getElementById('decants')
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.scrollY - 70
+        window.scrollTo({ top: y, behavior: 'smooth' })
+      }
+    }, 250)
+  }
+
   const pedirPorWhatsApp = () => {
-    const texto = etiquetaPresentacion(presentacion)
-    const mensaje = `¡Hola ${config.nombre}! 👋 Quisiera consultar por el ${marca} ${nombre}${texto ? ` (${texto})` : ''}.`
+    const mensaje = `¡Hola ${config.nombre}! 👋 Quisiera consultar por el ${marca} ${nombre}${ml ? ` (${ml} ml)` : ''}.`
     window.open(
       `https://wa.me/${config.whatsapp}?text=${encodeURIComponent(mensaje)}`,
       '_blank',
@@ -109,49 +109,7 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
                 <span className="pm-precio-antes">{config.moneda} {presentacion.precioAntes}</span>
               )}
               <span className="pm-precio-actual">{config.moneda} {presentacion.precio}</span>
-              {/* Aclara a qué presentación corresponde el precio mostrado */}
-              {hayVariasPresentaciones && (
-                <span className="pm-precio-nota">
-                  {presentacion.clave === 'frasco'
-                    ? 'Frasco completo'
-                    : `Decant ${presentacion.detalle}`}
-                </span>
-              )}
             </div>
-
-            {/* Selector de presentación (solo si hay decants) */}
-            {hayVariasPresentaciones && (
-              <section className="pm-bloque">
-                <h3 className="pm-bloque-titulo">Elige tu presentación</h3>
-                <div className="pm-tallas" role="radiogroup" aria-label="Presentación">
-                  {opciones.map((o) => {
-                    const activa = o.clave === presentacion.clave
-                    return (
-                      <button
-                        key={o.clave}
-                        type="button"
-                        role="radio"
-                        aria-checked={activa}
-                        className={`pm-talla ${activa ? 'pm-talla-activa' : ''}`}
-                        onClick={() => setClaveSel(o.clave)}
-                      >
-                        <span className="pm-talla-tipo">
-                          {o.clave === 'frasco' ? 'Frasco' : 'Decant'}
-                        </span>
-                        <span className="pm-talla-ml">{o.detalle}</span>
-                        <span className="pm-talla-precio">
-                          {config.moneda} {o.precio}
-                        </span>
-                      </button>
-                    )
-                  })}
-                </div>
-                <p className="pm-talla-nota">
-                  Los decants son una porción del perfume original en un
-                  atomizador, ideales para probarlo o llevarlo contigo.
-                </p>
-              </section>
-            )}
 
             {ficha.length > 0 && (
               <section className="pm-bloque">
@@ -165,6 +123,17 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
                   ))}
                 </dl>
               </section>
+            )}
+
+            {/* Puente hacia la sección de decants, sin mezclar la compra */}
+            {desdeDecant && !agotado && (
+              <button className="pm-aviso-decant" onClick={irADecants}>
+                <Eyedropper size={18} weight="light" />
+                <span>
+                  ¿Prefieres probarlo primero? Este perfume también está en{' '}
+                  <strong>decant desde {config.moneda} {desdeDecant}</strong>.
+                </span>
+              </button>
             )}
 
             <div className="pm-acciones">

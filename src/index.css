@@ -579,6 +579,129 @@ ol, ul { list-style: none; }
   gap: 16px;
 }
 
+/* ---------- Sección Decants ---------- */
+.decants {
+  padding: 84px 0;
+  border-top: 1px solid var(--line);
+  background: var(--paper-2);
+}
+.dec-head { margin-bottom: 34px; }
+.dec-intro { max-width: 58ch; margin-top: 12px; font-size: 0.95rem; line-height: 1.7; }
+
+.dec-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+.dec-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+.dec-media {
+  aspect-ratio: 1 / 1;
+  background: var(--paper-2);
+  padding: 14px;
+}
+.dec-media img { width: 100%; height: 100%; object-fit: contain; }
+
+.dec-body { padding: 16px 16px 18px; display: flex; flex-direction: column; flex: 1; }
+.dec-marca {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--faint);
+}
+.dec-nombre {
+  font-family: var(--serif);
+  font-size: 1.16rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 5px 0 14px;
+}
+
+/* Selector de tamaño dentro de la tarjeta */
+.dec-tamanos { display: flex; gap: 8px; margin-bottom: 14px; }
+.dec-tamano {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 9px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper-2);
+  transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.dec-tamano:hover { border-color: var(--ink-soft); }
+.dec-tamano-activo {
+  border-color: var(--ink);
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+.dec-tamano-ml {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.1;
+}
+.dec-tamano-precio { font-size: 0.76rem; color: var(--ink-soft); }
+.dec-tamano-activo .dec-tamano-precio { color: var(--ink); }
+
+.dec-agregar {
+  width: 100%;
+  justify-content: center;
+  margin-top: auto;
+  padding: 11px 14px;
+  font-size: 0.84rem;
+  background: var(--ink);
+  color: var(--paper);
+}
+.dec-agregar:hover { background: #000; }
+.dec-agregar.agregado { background: var(--wa); color: #fff; }
+
+/* Aviso dentro de la ficha del perfume que lleva a los decants */
+.pm-aviso-decant {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  width: 100%;
+  margin-top: 24px;
+  padding: 13px 15px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--paper-2);
+  text-align: left;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  transition: border-color 0.2s var(--ease);
+}
+.pm-aviso-decant:hover { border-color: var(--ink); }
+.pm-aviso-decant svg { color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+.pm-aviso-decant strong { color: var(--ink); font-weight: 500; }
+
+@media (max-width: 1080px) {
+  .dec-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 860px) {
+  .dec-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+}
+@media (max-width: 620px) {
+  .decants { padding: 64px 0; }
+  .dec-nombre { font-size: 1.05rem; }
+}
+@media (max-width: 380px) {
+  .dec-grid { grid-template-columns: 1fr; }
+}
+
 /* ---------- Cómo comprar (editorial) ---------- */
 .comprar { padding: 100px 0; background: var(--paper-2); border-top: 1px solid var(--line-soft); }
 .comprar-grid {
@@ -748,12 +871,6 @@ ol, ul { list-style: none; }
 .pm-precio { display: flex; align-items: baseline; gap: 12px; margin: 18px 0 20px; }
 .pm-precio-antes { color: var(--faint); text-decoration: line-through; font-size: 0.95rem; }
 .pm-precio-actual { font-size: 1.6rem; font-weight: 500; }
-.pm-precio-nota {
-  font-size: 0.76rem;
-  letter-spacing: 0.02em;
-  color: var(--faint);
-  padding-bottom: 3px;
-}
 
 .pm-bloque { margin-top: 26px; }
 .pm-bloque-titulo {
@@ -764,47 +881,6 @@ ol, ul { list-style: none; }
   font-weight: 500;
   color: var(--faint);
   margin-bottom: 14px;
-}
-
-/* Selector de presentación (frasco / decants) */
-.pm-tallas { display: flex; gap: 10px; flex-wrap: wrap; }
-.pm-talla {
-  flex: 1 1 110px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 12px 14px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-card);
-  background: var(--paper-2);
-  text-align: left;
-  transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
-}
-.pm-talla:hover { border-color: var(--ink-soft); }
-.pm-talla-activa {
-  border-color: var(--ink);
-  background: var(--paper);
-  box-shadow: inset 0 0 0 1px var(--ink);
-}
-.pm-talla-tipo {
-  font-size: 0.64rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--faint);
-}
-.pm-talla-ml {
-  font-family: var(--serif);
-  font-size: 1.15rem;
-  font-weight: 600;
-  line-height: 1.1;
-}
-.pm-talla-precio { font-size: 0.86rem; color: var(--ink-soft); margin-top: 2px; }
-.pm-talla-activa .pm-talla-precio { color: var(--ink); }
-.pm-talla-nota {
-  font-size: 0.78rem;
-  color: var(--faint);
-  line-height: 1.6;
-  margin-top: 12px;
 }
 
 .pm-ficha { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }

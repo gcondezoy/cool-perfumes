@@ -56,8 +56,6 @@ export const categorias = [
   { id: 'mujer', nombre: 'Mujer' },
   { id: 'hombre', nombre: 'Hombre' },
   { id: 'unisex', nombre: 'Unisex' },
-  // No es un género: filtra los perfumes que se venden en decant.
-  { id: 'decants', nombre: 'Decants' },
 ]
 
 // Concentraciones y su abreviatura (se muestra junto al tamaño: "EDP · 100 ml").

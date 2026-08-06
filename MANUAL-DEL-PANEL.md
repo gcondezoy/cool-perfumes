@@ -77,30 +77,39 @@ Si un perfume es **caja abierta / tester**, marca la casilla **"Open Box"** en e
 formulario. Aparecerá con una etiqueta *Open Box* en su tarjeta y en su ficha,
 para que el cliente sepa que es una presentación abierta.
 
-## Vender un perfume en decant (5 ml y 10 ml)
+## Vender un perfume en decant (3 ml y 5 ml)
 
-En el formulario del producto, busca la sección **"Decants"** y pon el precio:
+La tienda tiene **dos secciones separadas** para que el cliente no se confunda:
 
-- **Precio decant 5 ml** → por ejemplo `60`
-- **Precio decant 10 ml** → por ejemplo `110`
+- **La colección** → los frascos completos
+- **Decants** → las porciones de 3 ml y 5 ml
 
-**Deja vacío el que no vendas.** Si dejas los dos vacíos, ese perfume solo se
-ofrece en frasco completo.
+**No cargas el decant como un producto aparte.** Se activa desde el mismo
+perfume: en el formulario, busca la sección **"Decants"** y pon el precio:
+
+- **Precio decant 3 ml** → por ejemplo `20`
+- **Precio decant 5 ml** → por ejemplo `30`
+
+**Deja vacío el que no vendas.** Si dejas los dos vacíos, ese perfume solo
+aparece en la sección de perfumes.
 
 ### Qué ve el cliente
-- En la tarjeta del catálogo aparece un aviso: *"También en decant desde S/ 60"*.
-- Al abrir el perfume puede **elegir la presentación** (Frasco / Decant 10 ml /
-  Decant 5 ml) y el precio cambia solo.
-- En el catálogo se activa un filtro **"Decants"** para ver de un vistazo todos
-  los perfumes que ofreces en esa medida. Ese filtro solo aparece cuando al
-  menos un perfume tiene precio de decant.
+- En la sección **Decants** aparece una tarjeta de ese perfume con los tamaños
+  y su precio. Elige el tamaño y lo agrega directo al carrito.
+- En la tarjeta del catálogo de perfumes ve un aviso: *"También en decant ·
+  desde S/ 20"*.
+- Al abrir la ficha del perfume, un aviso lo invita a ir a la sección de
+  decants si prefiere probarlo primero.
+
+La sección **Decants** solo aparece cuando al menos un perfume tiene precio de
+decant.
 
 ### En el pedido
 Cuando te llegue el WhatsApp, cada línea dice qué presentación pidió:
 
 ```
-• 1 × MFK Baccarat Rouge 540 (Decant 5 ml) - S/ 60
-• 1 × Dior Sauvage (100 ml) - S/ 429
+• 1 × Lattafa Yara (Decant 5 ml) - S/ 30
+• 1 × Dior Sauvage (100 ml) - S/ 399
 ```
 
 Un mismo perfume puede ir en el carrito en frasco y en decant a la vez, como

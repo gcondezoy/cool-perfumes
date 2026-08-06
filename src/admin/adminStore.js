@@ -28,8 +28,8 @@ function desdeDB(fila) {
     openBox: !!fila.open_box,
     agotado: !!fila.agotado,
     // Decants: null/vacío = ese perfume no se vende en esa medida
+    decant3ml: fila.decant_3ml != null ? Number(fila.decant_3ml) : undefined,
     decant5ml: fila.decant_5ml != null ? Number(fila.decant_5ml) : undefined,
-    decant10ml: fila.decant_10ml != null ? Number(fila.decant_10ml) : undefined,
     imagen: fila.imagen || '',
     concentracion: fila.concentracion || '',
   }
@@ -48,8 +48,8 @@ function haciaDB(p) {
     destacado: !!p.destacado,
     open_box: !!p.openBox,
     agotado: !!p.agotado,
+    decant_3ml: p.decant3ml ? Number(p.decant3ml) : null,
     decant_5ml: p.decant5ml ? Number(p.decant5ml) : null,
-    decant_10ml: p.decant10ml ? Number(p.decant10ml) : null,
     imagen: p.imagen || null,
     concentracion: p.concentracion || null,
     // Nota: las columnas descripcion, notas_salida/corazon/fondo, duracion,
