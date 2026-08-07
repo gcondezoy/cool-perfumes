@@ -57,12 +57,21 @@ function Root() {
 // Quita la pantalla de carga cuando la tienda ya está lista.
 // Espera a que carguen las tipografías (evita el "salto" de texto), pero
 // con un tope: si algo tarda demasiado, igual deja pasar al visitante.
+//
+// Tiempos de la secuencia (ajustables):
+//   0.0s  el logo empieza a aparecer (animación de 1.1s)
+//   1.5s  el logo ya se asentó y se mantiene un instante
+//   1.5s  comienza la salida: el logo se eleva y se desvanece
+//   1.9s  se desvanece el fondo
+//   2.6s  se elimina del DOM
 async function ocultarPantallaDeCarga() {
   const capa = document.getElementById('carga')
   if (!capa) return
 
-  const MINIMO_VISIBLE = 600   // evita un parpadeo si carga muy rápido
-  const TOPE = 2500            // nunca bloquea la tienda
+  const MINIMO_VISIBLE = 1500 // deja ver el logo completo, sin apurarlo
+  const ANTES_DE_FONDO = 400  // el logo sale primero, luego el fondo
+  const DURACION_FONDO = 700  // debe coincidir con la transición del CSS
+  const TOPE = 3000           // nunca bloquea la tienda
 
   try {
     await Promise.race([
@@ -75,10 +84,14 @@ async function ocultarPantallaDeCarga() {
 
   // performance.now() cuenta desde que se abrió la página.
   const restante = Math.max(0, MINIMO_VISIBLE - performance.now())
+
   setTimeout(() => {
-    capa.classList.add('oculto')
-    // Se elimina del DOM para que no intercepte clics.
-    setTimeout(() => capa.remove(), 500)
+    capa.classList.add('saliendo')          // el logo se eleva y se va
+    setTimeout(() => {
+      capa.classList.add('oculto')          // luego se abre el fondo
+      // Se elimina del DOM para que no intercepte clics.
+      setTimeout(() => capa.remove(), DURACION_FONDO)
+    }, ANTES_DE_FONDO)
   }, restante)
 }
 
