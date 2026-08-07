@@ -54,6 +54,34 @@ function Root() {
   )
 }
 
+// Quita la pantalla de carga cuando la tienda ya está lista.
+// Espera a que carguen las tipografías (evita el "salto" de texto), pero
+// con un tope: si algo tarda demasiado, igual deja pasar al visitante.
+async function ocultarPantallaDeCarga() {
+  const capa = document.getElementById('carga')
+  if (!capa) return
+
+  const MINIMO_VISIBLE = 600   // evita un parpadeo si carga muy rápido
+  const TOPE = 2500            // nunca bloquea la tienda
+
+  try {
+    await Promise.race([
+      document.fonts ? document.fonts.ready : Promise.resolve(),
+      new Promise((r) => setTimeout(r, TOPE)),
+    ])
+  } catch {
+    /* si falla, se oculta igual */
+  }
+
+  // performance.now() cuenta desde que se abrió la página.
+  const restante = Math.max(0, MINIMO_VISIBLE - performance.now())
+  setTimeout(() => {
+    capa.classList.add('oculto')
+    // Se elimina del DOM para que no intercepte clics.
+    setTimeout(() => capa.remove(), 500)
+  }, restante)
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ErrorBoundary>
@@ -61,3 +89,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </ErrorBoundary>
   </React.StrictMode>,
 )
+
+ocultarPantallaDeCarga()
