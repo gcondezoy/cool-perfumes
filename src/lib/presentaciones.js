@@ -2,13 +2,13 @@
 //  PERFUMES Y DECANTS
 //  La tienda separa dos secciones para que no haya confusión:
 //   - "Perfumes": el frasco completo.
-//   - "Decants": porciones de 3 ml y 5 ml del mismo perfume.
+//   - "Decants": porciones de 5 ml y 10 ml del mismo perfume.
 //  Un producto se carga una sola vez; si tiene precio de decant,
 //  aparece además en la sección de decants.
 // =============================================================
 
 // Tamaños de decant que maneja la tienda.
-export const TAMANOS_DECANT = [3, 5]
+export const TAMANOS_DECANT = [5, 10]
 
 // Presentación del frasco completo (sección "Perfumes").
 export function presentacionFrasco(producto) {
@@ -25,7 +25,7 @@ export function presentacionFrasco(producto) {
 // Decants disponibles de un perfume (solo los que tienen precio).
 export function decantsDe(producto) {
   if (!producto) return []
-  const porTamano = { 3: producto.decant3ml, 5: producto.decant5ml }
+  const porTamano = { 5: producto.decant5ml, 10: producto.decant10ml }
 
   return TAMANOS_DECANT.filter((ml) => porTamano[ml]).map((ml) => ({
     clave: `${ml}ml`,

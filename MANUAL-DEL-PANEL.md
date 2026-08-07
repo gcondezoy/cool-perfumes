@@ -77,18 +77,18 @@ Si un perfume es **caja abierta / tester**, marca la casilla **"Open Box"** en e
 formulario. Aparecerá con una etiqueta *Open Box* en su tarjeta y en su ficha,
 para que el cliente sepa que es una presentación abierta.
 
-## Vender un perfume en decant (3 ml y 5 ml)
+## Vender un perfume en decant (5 ml y 10 ml)
 
 La tienda tiene **dos secciones separadas** para que el cliente no se confunda:
 
 - **La colección** → los frascos completos
-- **Decants** → las porciones de 3 ml y 5 ml
+- **Decants** → las porciones de 5 ml y 10 ml
 
 **No cargas el decant como un producto aparte.** Se activa desde el mismo
 perfume: en el formulario, busca la sección **"Decants"** y pon el precio:
 
-- **Precio decant 3 ml** → por ejemplo `20`
 - **Precio decant 5 ml** → por ejemplo `30`
+- **Precio decant 10 ml** → por ejemplo `50`
 
 **Deja vacío el que no vendas.** Si dejas los dos vacíos, ese perfume solo
 aparece en la sección de perfumes.
@@ -97,7 +97,7 @@ aparece en la sección de perfumes.
 - En la sección **Decants** aparece una tarjeta de ese perfume con los tamaños
   y su precio. Elige el tamaño y lo agrega directo al carrito.
 - En la tarjeta del catálogo de perfumes ve un aviso: *"También en decant ·
-  desde S/ 20"*.
+  desde S/ 30"*.
 - Al abrir la ficha del perfume, un aviso lo invita a ir a la sección de
   decants si prefiere probarlo primero.
 

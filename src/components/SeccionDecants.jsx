@@ -99,7 +99,7 @@ export default function SeccionDecants({ productos, onAgregar }) {
         <div className="dec-head">
           <h2 className="section-title">Decants</h2>
           <p className="section-sub dec-intro">
-            Porciones del perfume original en atomizador de 3 ml y 5 ml.
+            Porciones del perfume original en atomizador de 5 ml y 10 ml.
             Ideales para probar una fragancia antes de comprar el frasco
             completo, o para llevarla contigo.
           </p>
