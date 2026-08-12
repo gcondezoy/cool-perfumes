@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { X, Plus, WhatsappLogo, Eyedropper } from '@phosphor-icons/react'
 import { marca as config, abreviarConcentracion } from '../config.js'
 import { presentacionFrasco, precioDesdeDecant } from '../lib/presentaciones.js'
+import { estaAgotado, stockBajo, unidadesDisponibles } from '../lib/stock.js'
 
 export default function ProductoModal({ producto, onCerrar, onAgregar }) {
   const cerrarRef = useRef(null)
@@ -30,7 +31,11 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
 
   if (!producto) return null
 
-  const { nombre, marca, ml, imagen, concentracion, genero, openBox, agotado } = producto
+  const { nombre, marca, ml, imagen, concentracion, genero, openBox } = producto
+
+  const agotado = estaAgotado(producto)
+  const quedanPocas = stockBajo(producto)
+  const unidades = unidadesDisponibles(producto)
 
   // Esta ficha es siempre del frasco completo: los decants tienen su
   // propia sección, para que el cliente no confunda lo que está comprando.
@@ -102,6 +107,11 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
               {subtitulo && <p className="pm-familia">{subtitulo}</p>}
               {openBox && <span className="pm-openbox">Open Box</span>}
               {agotado && <span className="pm-agotado">Agotado</span>}
+              {quedanPocas && (
+                <span className="pm-pocas">
+                  {unidades === 1 ? 'Última unidad' : `Últimas ${unidades} unidades`}
+                </span>
+              )}
             </div>
 
             <div className="pm-precio">

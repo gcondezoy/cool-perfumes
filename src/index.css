@@ -449,6 +449,20 @@ ol, ul { list-style: none; }
   letter-spacing: 0.12em;
 }
 
+/* Aviso de últimas unidades: abajo de la foto, para no chocar con
+   las etiquetas de Destacado / Oferta que van arriba. */
+.card-pocas {
+  position: absolute;
+  left: 12px; bottom: 12px;
+  padding: 5px 11px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 /* ---- Producto agotado ---- */
 .card-agotado .card-media { background: #d9d7d1; }
 .card-agotado .card-media img {
@@ -880,6 +894,17 @@ ol, ul { list-style: none; }
   text-transform: uppercase;
 }
 .pm-agotado { background: #6f6c64; }
+.pm-pocas {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 11px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
 .pm-btn-agotado {
   background: rgba(23, 21, 15, 0.09);
   color: var(--faint);
@@ -1032,6 +1057,16 @@ ol, ul { list-style: none; }
   transition: background 0.2s var(--ease), color 0.2s var(--ease);
 }
 .stepper button:hover { background: var(--paper); color: var(--ink); }
+.stepper button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background: none;
+}
+.drawer-tope {
+  font-size: 0.72rem;
+  color: var(--accent);
+  margin-top: 6px;
+}
 .stepper span { min-width: 22px; text-align: center; font-size: 0.9rem; }
 
 .drawer-item-lado {

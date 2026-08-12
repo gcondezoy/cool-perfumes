@@ -1,4 +1,5 @@
 import { MagnifyingGlass, Wind } from '@phosphor-icons/react'
+import { estaAgotado } from '../lib/stock.js'
 import ProductCard from './ProductCard.jsx'
 
 export default function Catalogo({
@@ -12,8 +13,9 @@ export default function Catalogo({
   onAbrirDetalle,
   cargando,
 }) {
-  // El contador no considera los productos agotados.
-  const disponibles = productos.filter((p) => !p.agotado).length
+  // El contador no considera los productos agotados (ni los que se
+  // quedaron sin stock).
+  const disponibles = productos.filter((p) => !estaAgotado(p)).length
 
   return (
     <section className="catalogo" id="catalogo">

@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { listarProductos, getProductosCache, suscribir } from './admin/adminStore.js'
 import { itemDeCarrito } from './lib/presentaciones.js'
+import { estaAgotado, unidadesDisponibles } from './lib/stock.js'
 import { categorias } from './config.js'
 
 const CLAVE_CARRITO = 'coolperfumes_carrito_v1'
@@ -77,16 +78,21 @@ export default function App() {
   // por eso cada línea se identifica con "lineaId", no solo con el id.
   const agregar = useCallback((producto, presentacion) => {
     // Seguridad: un producto agotado nunca entra al carrito.
-    if (producto.agotado) return
+    if (estaAgotado(producto)) return
     const item = itemDeCarrito(producto, presentacion)
+    // El stock limita solo el frasco completo (los decants se preparan).
+    const tope = item.presentacion === 'frasco' ? unidadesDisponibles(producto) : Infinity
+
     setCarrito((prev) => {
       const existe = prev.find((p) => p.lineaId === item.lineaId)
       if (existe) {
+        if (existe.cantidad >= tope) return prev   // ya llegó al máximo
         return prev.map((p) =>
           p.lineaId === item.lineaId ? { ...p, cantidad: p.cantidad + 1 } : p,
         )
       }
-      return [...prev, { ...item, cantidad: 1 }]
+      if (tope < 1) return prev
+      return [...prev, { ...item, cantidad: 1, stock: producto.stock }]
     })
     setCarritoAbierto(true)
   }, [])
@@ -94,7 +100,13 @@ export default function App() {
   const cambiarCantidad = useCallback((lineaId, delta) => {
     setCarrito((prev) =>
       prev
-        .map((p) => (p.lineaId === lineaId ? { ...p, cantidad: p.cantidad + delta } : p))
+        .map((p) => {
+          if (p.lineaId !== lineaId) return p
+          const tope =
+            p.presentacion === 'frasco' ? unidadesDisponibles(p) : Infinity
+          const nueva = Math.min(p.cantidad + delta, tope)
+          return { ...p, cantidad: nueva }
+        })
         .filter((p) => p.cantidad > 0),
     )
   }, [])
@@ -144,7 +156,11 @@ export default function App() {
         return coincideGenero && coincideBusqueda
       })
       // Los agotados van al final (el orden del resto se mantiene).
-      .sort((a, b) => (a.agotado === b.agotado ? 0 : a.agotado ? 1 : -1))
+      .sort((a, b) => {
+        const aAgotado = estaAgotado(a)
+        const bAgotado = estaAgotado(b)
+        return aAgotado === bAgotado ? 0 : aAgotado ? 1 : -1
+      })
   }, [filtro, busqueda, productos])
 
   return (

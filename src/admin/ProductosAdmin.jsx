@@ -16,6 +16,7 @@ const VACIO = {
   ml: 100,
   precio: 0,
   precioAntes: '',
+  stock: '',
   decant5ml: '',
   decant10ml: '',
   destacado: false,
@@ -94,6 +95,8 @@ export default function ProductosAdmin({
       // Los campos opcionales vacíos deben ser '' y no undefined,
       // para que React los trate como campos controlados.
       precioAntes: p.precioAntes || '',
+      // El 0 es un valor válido (agotado), por eso no se usa "||".
+      stock: p.stock === null || p.stock === undefined ? '' : p.stock,
       decant5ml: p.decant5ml || '',
       decant10ml: p.decant10ml || '',
     })
@@ -138,6 +141,8 @@ export default function ProductosAdmin({
       ml: Number(form.ml) || 0,
       precio: Number(form.precio) || 0,
       precioAntes: form.precioAntes ? Number(form.precioAntes) : undefined,
+      // Vacío = sin control de stock. El 0 sí se guarda (agotado).
+      stock: form.stock === '' ? null : Number(form.stock),
       // Vacío = ese perfume no se vende en esa medida
       decant5ml: form.decant5ml ? Number(form.decant5ml) : undefined,
       decant10ml: form.decant10ml ? Number(form.decant10ml) : undefined,
@@ -234,6 +239,7 @@ export default function ProductosAdmin({
               <th>ml</th>
               <th>Precio</th>
               <th>Antes</th>
+              <th>Stock</th>
               <th></th>
             </tr>
           </thead>
@@ -258,6 +264,15 @@ export default function ProductosAdmin({
                 <td className="adm-td-suave">{p.ml}</td>
                 <td>{marca.moneda} {p.precio}</td>
                 <td className="adm-td-suave">{p.precioAntes ? `${marca.moneda} ${p.precioAntes}` : '—'}</td>
+                <td>
+                  {p.stock === null || p.stock === undefined ? (
+                    <span className="adm-td-suave">—</span>
+                  ) : (
+                    <span className={`adm-stock ${p.stock === 0 ? 'adm-stock-cero' : p.stock <= 3 ? 'adm-stock-bajo' : ''}`}>
+                      {p.stock}
+                    </span>
+                  )}
+                </td>
                 <td>
                   <div className="adm-acciones">
                     <button onClick={() => abrirEditar(p)} aria-label={`Editar ${p.nombre}`}>
@@ -342,6 +357,23 @@ export default function ProductosAdmin({
               <label className="adm-campo">
                 <span>Precio antes (opcional)</span>
                 <input className="adm-input" type="number" min="0" value={form.precioAntes} onChange={cambiar('precioAntes')} placeholder="Para mostrar oferta" />
+              </label>
+
+              <label className="adm-campo adm-campo-ancho">
+                <span>Stock (unidades del frasco)</span>
+                <input
+                  className="adm-input"
+                  type="number"
+                  min="0"
+                  value={form.stock}
+                  onChange={cambiar('stock')}
+                  placeholder="Vacío = sin control de stock"
+                />
+                <small className="adm-ayuda">
+                  Si pones un número, el cliente no podrá pedir más de esa
+                  cantidad. Al llegar a <strong>0</strong> el perfume se marca
+                  como agotado solo. Déjalo vacío si no quieres llevar control.
+                </small>
               </label>
 
               {/* ---- Decants ---- */}

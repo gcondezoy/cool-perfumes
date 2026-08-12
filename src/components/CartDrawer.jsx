@@ -1,6 +1,13 @@
 import { X, Minus, Plus, Trash, WhatsappLogo } from '@phosphor-icons/react'
 import { marca } from '../config.js'
 import { generarCodigo, registrarPedido } from '../admin/pedidosStore.js'
+import { unidadesDisponibles } from '../lib/stock.js'
+
+// El stock limita solo el frasco completo; los decants se preparan.
+function enSuMaximo(item) {
+  if (item.presentacion && item.presentacion !== 'frasco') return false
+  return item.cantidad >= unidadesDisponibles(item)
+}
 
 export default function CartDrawer({
   abierto,
@@ -96,10 +103,15 @@ export default function CartDrawer({
                       <button
                         onClick={() => onCambiarCantidad(p.lineaId, 1)}
                         aria-label="Agregar una unidad"
+                        disabled={enSuMaximo(p)}
+                        title={enSuMaximo(p) ? 'No hay más unidades disponibles' : undefined}
                       >
                         <Plus size={14} weight="bold" />
                       </button>
                     </div>
+                    {enSuMaximo(p) && (
+                      <p className="drawer-tope">Es todo el stock disponible</p>
+                    )}
                   </div>
                   <div className="drawer-item-lado">
                     <span className="drawer-item-precio">

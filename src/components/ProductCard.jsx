@@ -2,10 +2,16 @@ import { useRef, useEffect, useState } from 'react'
 import { Plus, Check, WhatsappLogo } from '@phosphor-icons/react'
 import { marca as config, abreviarConcentracion } from '../config.js'
 import { tieneDecants, precioDesdeDecant } from '../lib/presentaciones.js'
+import { estaAgotado, stockBajo, unidadesDisponibles } from '../lib/stock.js'
 
 export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index = 0 }) {
-  const { nombre, marca, notas, ml, precio, precioAntes, destacado, openBox, agotado, concentracion, imagen } =
+  const { nombre, marca, notas, ml, precio, precioAntes, destacado, openBox, concentracion, imagen } =
     producto
+
+  // "Agotado" cubre tanto el interruptor manual como el stock en cero.
+  const agotado = estaAgotado(producto)
+  const quedanPocas = stockBajo(producto)
+  const unidades = unidadesDisponibles(producto)
 
   const descuento = precioAntes
     ? Math.round(((precioAntes - precio) / precioAntes) * 100)
@@ -81,6 +87,11 @@ export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index
               {openBox && <span className="badge badge-openbox">Open Box</span>}
               {!openBox && destacado && <span className="badge">Destacado</span>}
               {descuento && <span className="badge badge-oferta">-{descuento}%</span>}
+              {quedanPocas && (
+                <span className="card-pocas">
+                  {unidades === 1 ? 'Última unidad' : `Últimas ${unidades} unidades`}
+                </span>
+              )}
             </>
           )}
           <span className="card-ver">Ver detalles</span>

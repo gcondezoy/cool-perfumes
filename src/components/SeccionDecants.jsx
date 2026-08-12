@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react'
 import { Plus, Check } from '@phosphor-icons/react'
 import { marca as config } from '../config.js'
 import { decantsDe } from '../lib/presentaciones.js'
+import { estaAgotado } from '../lib/stock.js'
 
 // Tarjeta de decant: muestra los tamaños disponibles con su precio y
 // permite agregar directamente el que se elija. Sin pasos intermedios.
@@ -88,7 +89,7 @@ function TarjetaDecant({ producto, onAgregar, index }) {
 }
 
 export default function SeccionDecants({ productos, onAgregar }) {
-  const conDecant = productos.filter((p) => !p.agotado && decantsDe(p).length > 0)
+  const conDecant = productos.filter((p) => !estaAgotado(p) && decantsDe(p).length > 0)
 
   // Si no hay ningún decant cargado, la sección no se muestra.
   if (conDecant.length === 0) return null

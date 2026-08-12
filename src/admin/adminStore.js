@@ -27,6 +27,8 @@ function desdeDB(fila) {
     destacado: !!fila.destacado,
     openBox: !!fila.open_box,
     agotado: !!fila.agotado,
+    // Stock: null = sin control de stock; 0 = agotado
+    stock: fila.stock != null ? Number(fila.stock) : null,
     // Decants: null/vacío = ese perfume no se vende en esa medida
     decant5ml: fila.decant_5ml != null ? Number(fila.decant_5ml) : undefined,
     decant10ml: fila.decant_10ml != null ? Number(fila.decant_10ml) : undefined,
@@ -48,6 +50,8 @@ function haciaDB(p) {
     destacado: !!p.destacado,
     open_box: !!p.openBox,
     agotado: !!p.agotado,
+    // Vacío = sin control de stock (se guarda como null, no como 0)
+    stock: p.stock === '' || p.stock === null || p.stock === undefined ? null : Number(p.stock),
     decant_5ml: p.decant5ml ? Number(p.decant5ml) : null,
     decant_10ml: p.decant10ml ? Number(p.decant10ml) : null,
     imagen: p.imagen || null,
@@ -119,6 +123,9 @@ function mensajeError(prefijo, error) {
   const m = error.message || ''
   if (m.includes('decant')) {
     return 'Falta agregar los decants a la base de datos. Ejecuta supabase/decants.sql en Supabase (SQL Editor).'
+  }
+  if (m.includes('stock')) {
+    return 'Falta agregar el control de stock a la base de datos. Ejecuta supabase/stock.sql en Supabase (SQL Editor).'
   }
   if (m.includes('open_box') || m.includes('agotado')) {
     return 'Falta crear columnas nuevas en la base de datos. Ejecuta supabase/columnas-extra.sql en Supabase (SQL Editor).'

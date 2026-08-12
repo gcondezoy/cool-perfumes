@@ -527,6 +527,19 @@
 }
 .adm-pill-openbox { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .adm-pill-agotado { background: #6f6c64; color: var(--paper); border-color: #6f6c64; }
+
+/* Columna de stock en la tabla */
+.adm-stock {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-variant-numeric: tabular-nums;
+  background: rgba(23, 21, 15, 0.06);
+}
+.adm-stock-bajo { background: rgba(161, 98, 7, 0.14); color: #7a4a05; }
+.adm-stock-cero { background: rgba(161, 60, 42, 0.14); color: #a13c2a; }
 .adm-acciones { display: flex; gap: 4px; justify-content: flex-end; }
 .adm-acciones button {
   display: grid; place-items: center;

@@ -120,6 +120,37 @@ dos líneas separadas.
 
 ---
 
+## Controlar el stock
+
+En el formulario hay un campo **"Stock (unidades del frasco)"**:
+
+| Qué pones | Qué pasa |
+|---|---|
+| **Vacío** | Sin control: el cliente puede pedir la cantidad que quiera |
+| **0** | El perfume se marca como **agotado** automáticamente |
+| **1 o más** | El cliente **no podrá pedir más** de esa cantidad |
+
+### Qué ve el cliente
+- Si quedan **3 o menos**, aparece un aviso rojo en la tarjeta:
+  *"Últimas 2 unidades"* (o *"Última unidad"*). Genera urgencia y ayuda a vender.
+- Si intenta agregar más de lo disponible, el botón **+** del carrito se
+  bloquea y le avisa *"Es todo el stock disponible"*.
+- Al llegar a 0, el perfume se ve en gris con la etiqueta **Agotado** y pasa al
+  final del catálogo, igual que si lo marcaras a mano.
+
+### Cosas importantes
+- **El stock no se descuenta solo.** Cuando vendas, tienes que bajar el número
+  a mano en el panel. Se hizo así a propósito: como también vendes por otros
+  canales (tienda, Instagram), un descuento automático te desordenaría el
+  inventario.
+- **El stock es del frasco completo.** Los decants no descuentan unidades,
+  porque se preparan del frasco. Si un perfume se agota, sus decants también
+  dejan de ofrecerse.
+- En la tabla de productos verás la columna **Stock**, en naranja cuando queda
+  poco y en rojo cuando está en 0.
+
+---
+
 ## Marcar un perfume como Agotado
 
 Cuando te quedes sin stock, marca la casilla **"Agotado"** en el formulario.

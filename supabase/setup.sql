@@ -46,6 +46,7 @@ alter table public.productos add column if not exists open_box      boolean not 
 alter table public.productos add column if not exists agotado       boolean not null default false;
 alter table public.productos add column if not exists decant_5ml    numeric;
 alter table public.productos add column if not exists decant_10ml   numeric;
+alter table public.productos add column if not exists stock         integer;
 
 -- Índice para ordenar por fecha de creación
 create index if not exists productos_creado_en_idx
