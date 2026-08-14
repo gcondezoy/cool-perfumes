@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, lazy, Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import { Analytics } from '@vercel/analytics/react'
 import App from './App.jsx'
-import AdminApp from './admin/AdminApp.jsx'
-import PoliticaPrivacidad from './components/PoliticaPrivacidad.jsx'
 import BannerCookies from './components/BannerCookies.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import { leerConsentimiento, suscribirConsentimiento } from './lib/consentimiento.js'
 import './index.css'
+
+// El panel y la política se descargan solo si se entra a esas páginas: así
+// quien viene a comprar no carga código que nunca va a usar.
+const AdminApp = lazy(() => import('./admin/AdminApp.jsx'))
+const PoliticaPrivacidad = lazy(() => import('./components/PoliticaPrivacidad.jsx'))
 
 // Enrutado: tienda en "/", panel en "/admin", privacidad en "/privacidad".
 // Acepta también "/#/admin" (formato antiguo) para no romper enlaces guardados.
@@ -37,9 +40,17 @@ function Root() {
   }, [])
 
   const pantalla =
-    ruta === 'admin' ? <AdminApp />
-    : ruta === 'privacidad' ? <PoliticaPrivacidad />
-    : <App />
+    ruta === 'admin' ? (
+      <Suspense fallback={null}>
+        <AdminApp />
+      </Suspense>
+    ) : ruta === 'privacidad' ? (
+      <Suspense fallback={null}>
+        <PoliticaPrivacidad />
+      </Suspense>
+    ) : (
+      <App />
+    )
 
   return (
     <>
@@ -58,20 +69,23 @@ function Root() {
 // Espera a que carguen las tipografías (evita el "salto" de texto), pero
 // con un tope: si algo tarda demasiado, igual deja pasar al visitante.
 //
+// El mínimo visible existe solo para que el logo no "parpadee": se mantiene
+// corto a propósito, porque cada décima de espera antes de ver el catálogo
+// cuesta visitas.
+//
 // Tiempos de la secuencia (ajustables):
-//   0.0s  el logo empieza a aparecer (animación de 1.1s)
-//   1.5s  el logo ya se asentó y se mantiene un instante
-//   1.5s  comienza la salida: el logo se eleva y se desvanece
-//   1.9s  se desvanece el fondo
-//   2.6s  se elimina del DOM
+//   0.0s  el logo empieza a aparecer (animación de 0.7s)
+//   0.6s  comienza la salida: el logo se eleva y se desvanece
+//   0.9s  se desvanece el fondo
+//   1.4s  se elimina del DOM
 async function ocultarPantallaDeCarga() {
   const capa = document.getElementById('carga')
   if (!capa) return
 
-  const MINIMO_VISIBLE = 1500 // deja ver el logo completo, sin apurarlo
-  const ANTES_DE_FONDO = 400  // el logo sale primero, luego el fondo
-  const DURACION_FONDO = 700  // debe coincidir con la transición del CSS
-  const TOPE = 3000           // nunca bloquea la tienda
+  const MINIMO_VISIBLE = 600  // lo justo para que el logo no parpadee
+  const ANTES_DE_FONDO = 300  // el logo sale primero, luego el fondo
+  const DURACION_FONDO = 500  // debe coincidir con la transición del CSS
+  const TOPE = 2000           // nunca bloquea la tienda
 
   try {
     await Promise.race([

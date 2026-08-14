@@ -1,9 +1,10 @@
-import { MagnifyingGlass, Wind } from '@phosphor-icons/react'
-import { estaAgotado } from '../lib/stock.js'
+import { useState } from 'react'
+import { MagnifyingGlass, Wind, CaretDown } from '@phosphor-icons/react'
 import ProductCard from './ProductCard.jsx'
 
 export default function Catalogo({
   productos,
+  agotados = [],
   categorias,
   filtro,
   onFiltro,
@@ -13,9 +14,10 @@ export default function Catalogo({
   onAbrirDetalle,
   cargando,
 }) {
-  // El contador no considera los productos agotados (ni los que se
-  // quedaron sin stock).
-  const disponibles = productos.filter((p) => !estaAgotado(p)).length
+  // "productos" ya viene sin agotados: los agotados llegan aparte y se
+  // muestran solo si el visitante los pide.
+  const disponibles = productos.length
+  const [verAgotados, setVerAgotados] = useState(false)
 
   return (
     <section className="catalogo" id="catalogo">
@@ -54,7 +56,7 @@ export default function Catalogo({
           ))}
         </div>
 
-        {cargando && productos.length === 0 ? (
+        {cargando && productos.length === 0 && agotados.length === 0 ? (
           <div className="grid-productos">
             {Array.from({ length: 4 }).map((_, i) => (
               <div className="card-esqueleto" key={i}>
@@ -77,6 +79,11 @@ export default function Catalogo({
               />
             ))}
           </div>
+        ) : agotados.length > 0 ? (
+          <div className="vacio">
+            <Wind size={40} weight="light" />
+            <p>Por ahora no hay stock de lo que buscas, pero puedes verlo abajo y consultarnos.</p>
+          </div>
         ) : (
           <div className="vacio">
             <Wind size={40} weight="light" />
@@ -90,6 +97,42 @@ export default function Catalogo({
             >
               Limpiar filtros
             </button>
+          </div>
+        )}
+
+        {/* Agotados: fuera de la grilla principal, plegados por defecto */}
+        {agotados.length > 0 && (
+          <div className="agotados">
+            <button
+              className={`agotados-toggle ${verAgotados ? 'abierto' : ''}`}
+              onClick={() => setVerAgotados((v) => !v)}
+              aria-expanded={verAgotados}
+              aria-controls="lista-agotados"
+            >
+              <span>
+                Agotados por ahora
+                <span className="agotados-conteo">{agotados.length}</span>
+              </span>
+              <CaretDown size={16} weight="bold" />
+            </button>
+
+            <p className="agotados-nota">
+              Vuelven al stock seguido. Escríbenos y te avisamos cuando llegue el tuyo.
+            </p>
+
+            {verAgotados && (
+              <div className="grid-productos" id="lista-agotados">
+                {agotados.map((p, i) => (
+                  <ProductCard
+                    key={`agotado-${filtro}-${p.id}`}
+                    producto={p}
+                    onAgregar={onAgregar}
+                    onAbrirDetalle={onAbrirDetalle}
+                    index={i}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

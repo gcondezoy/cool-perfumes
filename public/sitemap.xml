@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Cambia la URL por tu dominio final cuando lo tengas -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://cool-perfumes.vercel.app/</loc>
+    <loc>https://coolperfumes.pe/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://cool-perfumes.vercel.app/privacidad</loc>
+    <loc>https://coolperfumes.pe/privacidad</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

@@ -6,7 +6,7 @@ Guía para administrar tu tienda. No necesitas saber de programación.
 
 ## Entrar al panel
 
-1. Abre **coolperfumes.com/admin** (o la dirección de tu tienda seguida de `/admin`).
+1. Abre **coolperfumes.pe/admin** (o la dirección de tu tienda seguida de `/admin`).
 2. Escribe tu **correo** y **contraseña**.
 3. Listo. Arriba verás un aviso verde que dice *"Conectado a Supabase"*: eso significa que todo está funcionando.
 
@@ -46,6 +46,9 @@ El perfume aparece en la tienda **al instante**. No hay que hacer nada más.
 3. Espera a que diga *"Subiendo…"* y aparezca la vista previa.
 
 **Requisitos:** JPG, PNG o WebP · máximo 5 MB.
+
+> No te preocupes por el peso de la foto: el panel la achica y la optimiza
+> solo, antes de subirla. Puedes mandar la foto tal como sale del celular.
 
 ### Consejo importante para que se vea profesional
 Toma **todas las fotos igual**: mismo fondo (de preferencia blanco o claro), misma distancia y el frasco centrado. Cuando las fotos son parejas, el catálogo se ve como el de una tienda grande. Si cada foto tiene un fondo distinto, se nota improvisado.
@@ -135,8 +138,8 @@ En el formulario hay un campo **"Stock (unidades del frasco)"**:
   *"Últimas 2 unidades"* (o *"Última unidad"*). Genera urgencia y ayuda a vender.
 - Si intenta agregar más de lo disponible, el botón **+** del carrito se
   bloquea y le avisa *"Es todo el stock disponible"*.
-- Al llegar a 0, el perfume se ve en gris con la etiqueta **Agotado** y pasa al
-  final del catálogo, igual que si lo marcaras a mano.
+- Al llegar a 0, el perfume **sale del catálogo principal** y se va al bloque
+  "Agotados por ahora", igual que si lo marcaras a mano (ver más abajo).
 
 ### Cosas importantes
 - **El stock no se descuenta solo.** Cuando vendas, tienes que bajar el número
@@ -154,12 +157,19 @@ En el formulario hay un campo **"Stock (unidades del frasco)"**:
 ## Marcar un perfume como Agotado
 
 Cuando te quedes sin stock, marca la casilla **"Agotado"** en el formulario.
-En la tienda ese perfume se verá **en gris con la etiqueta "Agotado"** y el
-cliente **no podrá agregarlo al carrito**, pero sí podrá ver sus detalles y
-**consultar por WhatsApp** (por si quiere avisarle cuando vuelva a haber).
+
+Ese perfume **desaparece del catálogo principal** y se va a un bloque cerrado
+al final, que dice *"Agotados por ahora (5)"*. El visitante solo lo ve si hace
+clic ahí. Se hizo así a propósito: si la mitad del catálogo se ve en gris con
+la etiqueta "Agotado", la tienda parece vacía y el cliente se va. Con esto,
+lo primero que ve es **solo lo que sí puede comprar**.
+
+Dentro de ese bloque el perfume sigue en gris, **no se puede agregar al
+carrito**, pero sí se ven sus detalles y hay un botón para **consultar por
+WhatsApp** (por si quiere que le avises cuando vuelva a haber).
 
 No hace falta borrarlo: cuando vuelvas a tener stock, solo desmarca la casilla
-y queda disponible otra vez.
+y vuelve al catálogo principal.
 
 ---
 

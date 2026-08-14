@@ -1,8 +1,9 @@
-import { useRef, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Plus, Check, WhatsappLogo } from '@phosphor-icons/react'
 import { marca as config, abreviarConcentracion } from '../config.js'
 import { tieneDecants, precioDesdeDecant } from '../lib/presentaciones.js'
 import { estaAgotado, stockBajo, unidadesDisponibles } from '../lib/stock.js'
+import { useReveal } from '../lib/useReveal.js'
 
 export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index = 0 }) {
   const { nombre, marca, notas, ml, precio, precioAntes, destacado, openBox, concentracion, imagen } =
@@ -13,9 +14,10 @@ export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index
   const quedanPocas = stockBajo(producto)
   const unidades = unidadesDisponibles(producto)
 
-  const descuento = precioAntes
-    ? Math.round(((precioAntes - precio) / precioAntes) * 100)
-    : null
+  // Solo hay descuento si el precio anterior es realmente mayor. Si no,
+  // queda en null: un 0 se colaría como texto suelto sobre la foto.
+  const descuento =
+    precioAntes > precio ? Math.round(((precioAntes - precio) / precioAntes) * 100) : null
 
   // Meta bajo el nombre: "EDP · 100 ml" (o solo lo que exista).
   const meta = [
@@ -26,29 +28,8 @@ export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index
   const hayDecant = tieneDecants(producto)
   const precioDecant = precioDesdeDecant(producto)
 
-  const ref = useRef(null)
-  const [visible, setVisible] = useState(false)
+  const [ref, visible] = useReveal({ threshold: 0.1, rootMargin: '0px 0px -40px 0px' })
   const [agregado, setAgregado] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setVisible(true)
-      return
-    }
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true)
-          io.disconnect()
-        }
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' },
-    )
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
 
   const handleAgregar = () => {
     onAgregar(producto)
@@ -112,7 +93,7 @@ export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index
 
       <div className="card-footer">
         <div className="precio">
-          {precioAntes && !agotado && (
+          {precioAntes > precio && !agotado && (
             <span className="precio-antes">
               {config.moneda} {precioAntes}
             </span>

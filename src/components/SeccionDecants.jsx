@@ -1,8 +1,9 @@
-import { useRef, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Plus, Check } from '@phosphor-icons/react'
 import { marca as config } from '../config.js'
 import { decantsDe } from '../lib/presentaciones.js'
 import { estaAgotado } from '../lib/stock.js'
+import { useReveal } from '../lib/useReveal.js'
 
 // Tarjeta de decant: muestra los tamaños disponibles con su precio y
 // permite agregar directamente el que se elija. Sin pasos intermedios.
@@ -10,28 +11,7 @@ function TarjetaDecant({ producto, onAgregar, index }) {
   const opciones = decantsDe(producto)
   const [elegido, setElegido] = useState(opciones[0]?.clave)
   const [agregado, setAgregado] = useState(false)
-  const ref = useRef(null)
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setVisible(true)
-      return
-    }
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) {
-          setVisible(true)
-          io.disconnect()
-        }
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' },
-    )
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
+  const [ref, visible] = useReveal({ threshold: 0.1, rootMargin: '0px 0px -40px 0px' })
 
   const opcion = opciones.find((o) => o.clave === elegido) || opciones[0]
   if (!opcion) return null

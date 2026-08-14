@@ -42,9 +42,13 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
   const presentacion = presentacionFrasco(producto)
   const desdeDecant = precioDesdeDecant(producto)
 
-  const descuento = presentacion.precioAntes
-    ? Math.round(((presentacion.precioAntes - presentacion.precio) / presentacion.precioAntes) * 100)
-    : null
+  // Igual que en la tarjeta: sin descuento real, null (un 0 se vería suelto).
+  const descuento =
+    presentacion.precioAntes > presentacion.precio
+      ? Math.round(
+          ((presentacion.precioAntes - presentacion.precio) / presentacion.precioAntes) * 100,
+        )
+      : null
 
   const ficha = [
     { etiqueta: 'Marca', valor: marca },
@@ -115,7 +119,7 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
             </div>
 
             <div className="pm-precio">
-              {presentacion.precioAntes && (
+              {presentacion.precioAntes > presentacion.precio && (
                 <span className="pm-precio-antes">{config.moneda} {presentacion.precioAntes}</span>
               )}
               <span className="pm-precio-actual">{config.moneda} {presentacion.precio}</span>

@@ -12,8 +12,7 @@
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <!-- IMPORTANTE: cambia esta línea por tu dominio final cuando lo tengas -->
-    <link rel="canonical" href="https://cool-perfumes.vercel.app/" />
+    <link rel="canonical" href="https://coolperfumes.pe/" />
 
     <!-- Vista previa al compartir por WhatsApp, Instagram, Facebook -->
     <meta property="og:type" content="website" />
@@ -21,8 +20,8 @@
     <meta property="og:locale" content="es_PE" />
     <meta property="og:title" content="Cool Perfumes by Renzo Cool." />
     <meta property="og:description" content="Perfumes árabes, diseñador y nicho. Elige el tuyo y haz tu pedido por WhatsApp en un minuto." />
-    <meta property="og:url" content="https://cool-perfumes.vercel.app/" />
-    <meta property="og:image" content="https://cool-perfumes.vercel.app/og-image.jpg" />
+    <meta property="og:url" content="https://coolperfumes.pe/" />
+    <meta property="og:image" content="https://coolperfumes.pe/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Cool Perfumes" />
@@ -30,7 +29,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Cool Perfumes by Renzo Cool." />
     <meta name="twitter:description" content="Perfumes árabes, diseñador y nicho. Elige el tuyo y haz tu pedido por WhatsApp en un minuto." />
-    <meta name="twitter:image" content="https://cool-perfumes.vercel.app/og-image.jpg" />
+    <meta name="twitter:image" content="https://coolperfumes.pe/og-image.jpg" />
 
     <!-- El logo de la pantalla de carga se pide primero para que aparezca al instante -->
     <link rel="preload" as="image" href="/logo-cool-perfumes.png" />
@@ -43,7 +42,8 @@
     <!--
       Pantalla de carga. Va en el HTML (no en React) y con los estilos aquí
       dentro para que se vea de inmediato, sin esperar a que descargue nada.
-      Cubre el tiempo real de carga: NO agrega demora artificial.
+      Cubre el tiempo real de carga y solo agrega un mínimo de 0,6s para que
+      el logo no parpadee. Los tiempos se ajustan en main.jsx.
     -->
     <style>
       #carga {
@@ -56,7 +56,7 @@
         justify-content: center;
         gap: 30px;
         background: #f4f2ee;
-        transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.7s;
+        transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s;
       }
       #carga.oculto { opacity: 0; visibility: hidden; }
 
@@ -64,7 +64,7 @@
       #carga img {
         width: min(210px, 56vw);
         height: auto;
-        animation: cargaEntra 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation: cargaEntra 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
       }
       @keyframes cargaEntra {
         from { opacity: 0; transform: translateY(14px) scale(0.96); }
@@ -78,7 +78,7 @@
         background: rgba(23, 21, 15, 0.14);
         overflow: hidden;
         opacity: 0;
-        animation: cargaAparece 0.6s ease 0.5s both;
+        animation: cargaAparece 0.4s ease 0.25s both;
         transition: opacity 0.4s ease;
       }
       #carga .barra span {
@@ -99,7 +99,7 @@
 
       /* --- Salida: el logo se eleva y se desvanece antes que el fondo --- */
       #carga.saliendo img {
-        animation: cargaSale 0.75s cubic-bezier(0.4, 0, 0.2, 1) both;
+        animation: cargaSale 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
       }
       #carga.saliendo .barra { opacity: 0; }
       @keyframes cargaSale {
@@ -122,8 +122,8 @@
       "@type": "Store",
       "name": "Cool Perfumes",
       "description": "Tienda de perfumes originales: árabes, de diseñador y de nicho.",
-      "image": "https://cool-perfumes.vercel.app/og-image.jpg",
-      "url": "https://cool-perfumes.vercel.app/",
+      "image": "https://coolperfumes.pe/og-image.jpg",
+      "url": "https://coolperfumes.pe/",
       "telephone": "+51981814457",
       "priceRange": "S/ 200 - S/ 1500",
       "currenciesAccepted": "PEN",

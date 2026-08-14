@@ -597,6 +597,70 @@ ol, ul { list-style: none; }
   gap: 16px;
 }
 
+/* ---------- Agotados (bloque plegable al pie del catálogo) ---------- */
+.agotados {
+  margin-top: 56px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line-soft);
+}
+.agotados-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: 4px 0;
+  cursor: pointer;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color 0.22s var(--ease);
+}
+.agotados-toggle:hover { color: var(--ink); }
+.agotados-toggle:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+.agotados-toggle > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.agotados-conteo {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: var(--r-pill);
+  background: var(--paper-2);
+  border: 1px solid var(--line-soft);
+  color: var(--faint);
+  font-size: 0.72rem;
+  letter-spacing: 0;
+}
+.agotados-toggle svg { transition: transform 0.3s var(--ease); }
+.agotados-toggle.abierto svg { transform: rotate(180deg); }
+
+.agotados-nota {
+  margin-top: 8px;
+  color: var(--faint);
+  font-size: 0.86rem;
+  max-width: 46ch;
+}
+.agotados #lista-agotados {
+  margin-top: 30px;
+  animation: agotadosEntra 0.45s var(--ease) both;
+}
+@keyframes agotadosEntra {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .agotados #lista-agotados { animation: none; }
+}
+
 /* ---------- Sección Decants ---------- */
 .decants {
   padding: 84px 0;
@@ -1198,7 +1262,27 @@ ol, ul { list-style: none; }
   .btn-agregar { width: 100%; justify-content: center; padding: 11px 12px; }
 }
 
-@media (max-width: 380px) {
+/* Celular: se mantienen las 2 columnas (una sola columna obligaba a
+   recorrer el catálogo entero de a un producto por pantalla). Se aprieta
+   la tipografía para que la tarjeta siga respirando en ~160px. */
+@media (max-width: 430px) {
+  .grid-productos { gap: 14px; }
+  .card-nombre { font-size: 1.06rem; }
+  .card-marca { font-size: 0.6rem; letter-spacing: 0.16em; }
+  .card-familia { font-size: 0.76rem; }
+  /* La píldora del decant llega justa al borde de la tarjeta de 2 columnas */
+  .card-decant { font-size: 0.62rem; padding: 3px 7px; }
+  .card-body { padding-top: 14px; }
+  .badge { font-size: 0.56rem; padding: 4px 9px; top: 9px; left: 9px; }
+  .badge-oferta { right: 9px; }
+  .card-pocas { font-size: 0.56rem; padding: 4px 9px; left: 9px; bottom: 9px; }
+  .card-agotado-tag { font-size: 0.64rem; padding: 7px 16px; letter-spacing: 0.14em; }
+  .precio-actual { font-size: 1.02rem; }
+  .btn-agregar { font-size: 0.8rem; padding: 10px 8px; }
+  .agotados-toggle { font-size: 0.8rem; }
+}
+
+@media (max-width: 340px) {
   .grid-productos { grid-template-columns: 1fr; }
   .card-notas { display: block; }
   .card-footer { flex-direction: row; align-items: center; }

@@ -1,7 +1,8 @@
-import { useRef, useEffect, useState } from 'react'
+import { useReveal } from '../lib/useReveal.js'
 
 // Anima la aparición de un elemento cuando entra en pantalla (scroll reveal).
-// Usa IntersectionObserver (sin listeners de scroll) y respeta prefers-reduced-motion.
+// La lógica vive en useReveal: IntersectionObserver, respeto por
+// prefers-reduced-motion y red de seguridad para que nunca quede invisible.
 export default function Reveal({
   children,
   as: Tag = 'div',
@@ -10,30 +11,7 @@ export default function Reveal({
   className = '',
   ...rest
 }) {
-  const ref = useRef(null)
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setVisible(true)
-      return
-    }
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true)
-          io.disconnect()
-        }
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -60px 0px' },
-    )
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
+  const [ref, visible] = useReveal()
 
   return (
     <Tag

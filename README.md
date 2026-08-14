@@ -3,7 +3,7 @@
 Catálogo web y panel administrativo para una tienda de perfumes multimarca en Lima, Perú.
 Los clientes arman su carrito y envían el pedido por WhatsApp.
 
-🔗 **En línea:** [cool-perfumes.vercel.app](https://cool-perfumes.vercel.app)
+🔗 **En línea:** [coolperfumes.pe](https://coolperfumes.pe)
 
 ---
 

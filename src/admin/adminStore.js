@@ -6,6 +6,7 @@
 // =============================================================
 
 import { supabase, supabaseConfigurado, BUCKET_IMAGENES } from '../lib/supabase.js'
+import { comprimirImagen, comprimirADataURL } from '../lib/imagenes.js'
 import { productos as semilla } from '../data/productos.js'
 
 const CLAVE = 'coolperfumes_productos_v1'
@@ -175,20 +176,21 @@ export async function subirImagen(archivo) {
 
   if (modoLocal) {
     // Sin backend: se guarda incrustada en el navegador (solo para probar).
-    return await new Promise((resolve, reject) => {
-      const lector = new FileReader()
-      lector.onload = () => resolve(lector.result)
-      lector.onerror = () => reject(new Error('No se pudo leer la imagen.'))
-      lector.readAsDataURL(archivo)
-    })
+    return await comprimirADataURL(archivo)
   }
 
-  const extension = (archivo.name.split('.').pop() || 'jpg').toLowerCase()
+  // Se redimensiona y comprime aquí, en el navegador: la tienda carga
+  // mucho más rápido y el cliente no tiene que preparar las fotos.
+  const { blob, extension, tipo } = await comprimirImagen(archivo)
   const nombreArchivo = `${crypto.randomUUID()}.${extension}`
 
   const { error } = await supabase.storage
     .from(BUCKET_IMAGENES)
-    .upload(nombreArchivo, archivo, { cacheControl: '3600', upsert: false })
+    .upload(nombreArchivo, blob, {
+      cacheControl: '31536000',
+      upsert: false,
+      contentType: tipo,
+    })
 
   if (error) throw new Error('No se pudo subir la imagen: ' + error.message)
 
@@ -211,8 +213,13 @@ export function suscribir(callback) {
     }
   }
 
+  // El nombre del canal tiene que ser único por suscripción: si se repite,
+  // Supabase devuelve el canal anterior (que ya hizo subscribe) y agregarle
+  // otro listener lanza un error que tumba la tienda entera. Pasa cuando el
+  // componente se vuelve a montar antes de que el canal anterior termine de
+  // cerrarse.
   const canal = supabase
-    .channel('productos-cambios')
+    .channel(`productos-cambios-${crypto.randomUUID()}`)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'productos' }, () => callback())
     .subscribe()
 

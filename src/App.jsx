@@ -14,6 +14,7 @@ import ProductoModal from './components/ProductoModal.jsx'
 import CartDrawer from './components/CartDrawer.jsx'
 import Footer from './components/Footer.jsx'
 import WhatsAppFab from './components/WhatsAppFab.jsx'
+import DatosEstructurados from './components/DatosEstructurados.jsx'
 
 export default function App() {
   const [filtro, setFiltro] = useState('todos')
@@ -144,24 +145,29 @@ export default function App() {
   // --- Filtrado y búsqueda ---
   const productosFiltrados = useMemo(() => {
     const q = busqueda.trim().toLowerCase()
-    return productos
-      .filter((p) => {
-        const coincideGenero = filtro === 'todos' || p.genero === filtro
-        const coincideBusqueda =
-          !q ||
-          p.nombre.toLowerCase().includes(q) ||
-          p.marca.toLowerCase().includes(q) ||
-          p.familia.toLowerCase().includes(q) ||
-          p.notas.toLowerCase().includes(q)
-        return coincideGenero && coincideBusqueda
-      })
-      // Los agotados van al final (el orden del resto se mantiene).
-      .sort((a, b) => {
-        const aAgotado = estaAgotado(a)
-        const bAgotado = estaAgotado(b)
-        return aAgotado === bAgotado ? 0 : aAgotado ? 1 : -1
-      })
+    const texto = (v) => (v || '').toString().toLowerCase()
+    return productos.filter((p) => {
+      const coincideGenero = filtro === 'todos' || p.genero === filtro
+      const coincideBusqueda =
+        !q ||
+        texto(p.nombre).includes(q) ||
+        texto(p.marca).includes(q) ||
+        texto(p.familia).includes(q) ||
+        texto(p.notas).includes(q)
+      return coincideGenero && coincideBusqueda
+    })
   }, [filtro, busqueda, productos])
+
+  // Los agotados NO se mezclan con el catálogo: van a un bloque aparte que
+  // el visitante abre si quiere. Así la tienda se ve por lo que sí se vende.
+  const disponibles = useMemo(
+    () => productosFiltrados.filter((p) => !estaAgotado(p)),
+    [productosFiltrados],
+  )
+  const agotados = useMemo(
+    () => productosFiltrados.filter((p) => estaAgotado(p)),
+    [productosFiltrados],
+  )
 
   return (
     <>
@@ -177,7 +183,8 @@ export default function App() {
       <main>
         <Hero onVerCatalogo={() => filtrarDesdeNav('todos')} />
         <Catalogo
-          productos={productosFiltrados}
+          productos={disponibles}
+          agotados={agotados}
           categorias={categorias}
           filtro={filtro}
           onFiltro={setFiltro}
@@ -209,6 +216,9 @@ export default function App() {
       />
 
       <WhatsAppFab />
+
+      {/* Le dice a Google qué vendes, a qué precio y si hay stock */}
+      <DatosEstructurados productos={productos} />
     </>
   )
 }

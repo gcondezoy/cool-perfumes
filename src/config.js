@@ -11,6 +11,11 @@ export const marca = {
   // Logo en /public (PNG con fondo transparente).
   logo: '/logo-cool-perfumes.png',
 
+  // Dominio final de la tienda (sin barra al final). Se usa en los datos
+  // estructurados que lee Google. Si cambia el dominio, cámbialo también
+  // en index.html, public/sitemap.xml y public/robots.txt.
+  sitio: 'https://coolperfumes.pe',
+
   // Número de WhatsApp en formato internacional SIN "+", espacios ni guiones.
   // Perú = 51. Aquí: 981 814 457 -> 51981814457
   whatsapp: '51981814457',
