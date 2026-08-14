@@ -3,6 +3,7 @@ import { X, Plus, WhatsappLogo, Eyedropper } from '@phosphor-icons/react'
 import { marca as config, abreviarConcentracion } from '../config.js'
 import { presentacionFrasco, precioDesdeDecant } from '../lib/presentaciones.js'
 import { estaAgotado, stockBajo, unidadesDisponibles } from '../lib/stock.js'
+import { imagenOptimizada, imagenSrcSet } from '../lib/imagenUrl.js'
 
 export default function ProductoModal({ producto, onCerrar, onAgregar }) {
   const cerrarRef = useRef(null)
@@ -99,7 +100,15 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
         <div className="pm-grid">
           {/* Imagen */}
           <div className="pm-media">
-            <img src={imagen} alt={`${marca} ${nombre}`} />
+            {/* La ficha muestra la foto bastante más grande (hasta ~420px
+                de ancho), así que se pide con más calidad que la tarjeta. */}
+            <img
+              src={imagenOptimizada(imagen, 900, 80)}
+              srcSet={imagenSrcSet(imagen, [500, 700, 900], 80)}
+              sizes="(max-width: 720px) 90vw, 420px"
+              alt={`${marca} ${nombre}`}
+              decoding="async"
+            />
             {descuento && <span className="pm-oferta">-{descuento}%</span>}
           </div>
 

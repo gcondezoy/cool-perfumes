@@ -5,6 +5,7 @@ import {
 } from '@phosphor-icons/react'
 import { exportarJSON, modoLocal, RANGOS_PRECIO } from './adminStore.js'
 import { marca, concentraciones } from '../config.js'
+import { imagenOptimizada } from '../lib/imagenUrl.js'
 
 const VACIO = {
   nombre: '',
@@ -248,7 +249,13 @@ export default function ProductosAdmin({
               <tr key={p.id}>
                 <td>
                   {p.imagen ? (
-                    <img src={p.imagen} alt="" className="adm-thumb" />
+                    <img
+                      src={imagenOptimizada(p.imagen, 120)}
+                      alt=""
+                      className="adm-thumb"
+                      loading="lazy"
+                      decoding="async"
+                    />
                   ) : (
                     <span className="adm-thumb adm-thumb-vacio" />
                   )}
@@ -415,7 +422,7 @@ export default function ProductosAdmin({
                 <span>Foto del producto</span>
                 <div className="adm-imagen-zona">
                   {form.imagen ? (
-                    <img src={form.imagen} alt="" className="adm-preview" />
+                    <img src={imagenOptimizada(form.imagen, 500)} alt="" className="adm-preview" />
                   ) : (
                     <div className="adm-preview adm-preview-vacio">Sin foto</div>
                   )}

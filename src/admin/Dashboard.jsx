@@ -5,6 +5,7 @@ import {
 import { calcularMetricas } from './adminStore.js'
 import { calcularMetricasPedidos, ESTADOS } from './pedidosStore.js'
 import { marca } from '../config.js'
+import { imagenOptimizada } from '../lib/imagenUrl.js'
 
 // Paleta categórica validada (contraste y daltonismo comprobados)
 const COLORES_GENERO = ['#a13c2a', '#0369a1', '#a16207']
@@ -306,7 +307,13 @@ export default function Dashboard({ productos, pedidos, onVerProductos, onVerPed
                     onClick={() => onVerProductos({ tipo: 'busqueda', valor: p.nombre, etiqueta: p.nombre })}
                   >
                     {p.imagen ? (
-                      <img src={p.imagen} alt="" className="adm-thumb" />
+                      <img
+                        src={imagenOptimizada(p.imagen, 120)}
+                        alt=""
+                        className="adm-thumb"
+                        loading="lazy"
+                        decoding="async"
+                      />
                     ) : (
                       <span className="adm-thumb adm-thumb-vacio" />
                     )}

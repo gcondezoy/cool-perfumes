@@ -4,6 +4,7 @@ import { marca as config } from '../config.js'
 import { decantsDe } from '../lib/presentaciones.js'
 import { estaAgotado } from '../lib/stock.js'
 import { useReveal } from '../lib/useReveal.js'
+import { imagenOptimizada, imagenSrcSet } from '../lib/imagenUrl.js'
 
 // Tarjeta de decant: muestra los tamaños disponibles con su precio y
 // permite agregar directamente el que se elija. Sin pasos intermedios.
@@ -29,7 +30,14 @@ function TarjetaDecant({ producto, onAgregar, index }) {
       style={{ transitionDelay: `${(index % 4) * 80}ms` }}
     >
       <div className="dec-media">
-        <img src={producto.imagen} alt={`${producto.marca} ${producto.nombre}`} loading="lazy" />
+        <img
+          src={imagenOptimizada(producto.imagen, 500)}
+          srcSet={imagenSrcSet(producto.imagen, [300, 500, 700])}
+          sizes="(max-width: 860px) 45vw, 260px"
+          alt={`${producto.marca} ${producto.nombre}`}
+          loading="lazy"
+          decoding="async"
+        />
       </div>
 
       <div className="dec-body">

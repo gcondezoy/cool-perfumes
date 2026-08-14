@@ -2,6 +2,7 @@ import { X, Minus, Plus, Trash, WhatsappLogo } from '@phosphor-icons/react'
 import { marca } from '../config.js'
 import { generarCodigo, registrarPedido } from '../admin/pedidosStore.js'
 import { unidadesDisponibles } from '../lib/stock.js'
+import { imagenOptimizada } from '../lib/imagenUrl.js'
 
 // El stock limita solo el frasco completo; los decants se preparan.
 function enSuMaximo(item) {
@@ -85,7 +86,13 @@ export default function CartDrawer({
             <ul className="drawer-items">
               {carrito.map((p) => (
                 <li key={p.lineaId || p.id} className="drawer-item">
-                  <img src={p.imagen} alt="" className="drawer-thumb" />
+                  <img
+                    src={imagenOptimizada(p.imagen, 160)}
+                    alt=""
+                    className="drawer-thumb"
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <div className="drawer-item-info">
                     <p className="drawer-item-marca">{p.marca}</p>
                     <p className="drawer-item-nombre">{p.nombre}</p>

@@ -4,6 +4,7 @@ import { marca as config, abreviarConcentracion } from '../config.js'
 import { tieneDecants, precioDesdeDecant } from '../lib/presentaciones.js'
 import { estaAgotado, stockBajo, unidadesDisponibles } from '../lib/stock.js'
 import { useReveal } from '../lib/useReveal.js'
+import { imagenOptimizada, imagenSrcSet } from '../lib/imagenUrl.js'
 
 export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index = 0 }) {
   const { nombre, marca, notas, ml, precio, precioAntes, destacado, openBox, concentracion, imagen } =
@@ -60,7 +61,16 @@ export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index
         aria-label={`Ver ficha completa de ${marca} ${nombre}`}
       >
         <div className="card-media">
-          <img src={imagen} alt={`${marca} ${nombre}`} loading="lazy" />
+          {/* La tarjeta mide ~163px en celular y ~277px en escritorio: se
+              pide justo ese tamaño (x2 para pantallas de alta densidad). */}
+          <img
+            src={imagenOptimizada(imagen, 600)}
+            srcSet={imagenSrcSet(imagen, [300, 400, 600, 800])}
+            sizes="(max-width: 860px) 50vw, (max-width: 1080px) 33vw, 300px"
+            alt={`${marca} ${nombre}`}
+            loading="lazy"
+            decoding="async"
+          />
           {agotado ? (
             <span className="card-agotado-tag">Agotado</span>
           ) : (
