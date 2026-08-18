@@ -20,8 +20,10 @@ const VACIO = {
   stock: '',
   decant5ml: '',
   decant10ml: '',
+  // La columna "destacado" ya no se usa en la tienda; se conserva para no
+  // perder lo que hubiera cargado en la base de datos.
   destacado: false,
-  openBox: false,
+  openBox: false, // false = Sellado (lo normal en un producto nuevo)
   agotado: false,
   imagen: '',
 }
@@ -340,6 +342,22 @@ export default function ProductosAdmin({
                 </select>
               </label>
 
+              {/* Estado del frasco: es la etiqueta que ve el cliente en la
+                  tarjeta. Va como lista y no como casilla suelta para que
+                  las dos opciones se vean, en vez de tener que deducir que
+                  "sin marcar" significa sellado. */}
+              <label className="adm-campo">
+                <span>Estado del frasco</span>
+                <select
+                  className="adm-input"
+                  value={form.openBox ? 'openbox' : 'sellado'}
+                  onChange={(e) => setForm((f) => ({ ...f, openBox: e.target.value === 'openbox' }))}
+                >
+                  <option value="sellado">Sellado</option>
+                  <option value="openbox">Open Box (caja abierta / tester)</option>
+                </select>
+              </label>
+
               <label className="adm-campo">
                 <span>Familia olfativa</span>
                 <input className="adm-input" value={form.familia} onChange={cambiar('familia')} placeholder="Amaderado Aromático" />
@@ -464,16 +482,6 @@ export default function ProductosAdmin({
               <label className="adm-campo adm-campo-ancho">
                 <span>…o pega la URL de una imagen</span>
                 <input className="adm-input" value={form.imagen} onChange={cambiar('imagen')} placeholder="https://…" />
-              </label>
-
-              {/* La etiqueta de la tienda es Sellado / Open Box: si esta
-                  casilla queda sin marcar, el perfume se muestra como
-                  "Sellado". La antigua casilla "Destacado" se quitó porque
-                  ya no pinta nada en la tienda (la columna sigue en la base
-                  de datos para no perder lo que hubiera cargado). */}
-              <label className="adm-check">
-                <input type="checkbox" checked={!!form.openBox} onChange={cambiar('openBox')} />
-                <span>Open Box (caja abierta / tester). Si no lo marcas, se muestra como Sellado</span>
               </label>
 
               <label className="adm-check">
