@@ -263,7 +263,6 @@ export default function ProductosAdmin({
                 <td className="adm-td-marca">{p.marca}</td>
                 <td>
                   <span className="adm-td-nombre">{p.nombre}</span>
-                  {p.destacado && <span className="adm-pill">Destacado</span>}
                   {p.openBox && <span className="adm-pill adm-pill-openbox">Open Box</span>}
                   {p.agotado && <span className="adm-pill adm-pill-agotado">Agotado</span>}
                 </td>
@@ -467,14 +466,14 @@ export default function ProductosAdmin({
                 <input className="adm-input" value={form.imagen} onChange={cambiar('imagen')} placeholder="https://…" />
               </label>
 
-              <label className="adm-check">
-                <input type="checkbox" checked={!!form.destacado} onChange={cambiar('destacado')} />
-                <span>Marcar como destacado</span>
-              </label>
-
+              {/* La etiqueta de la tienda es Sellado / Open Box: si esta
+                  casilla queda sin marcar, el perfume se muestra como
+                  "Sellado". La antigua casilla "Destacado" se quitó porque
+                  ya no pinta nada en la tienda (la columna sigue en la base
+                  de datos para no perder lo que hubiera cargado). */}
               <label className="adm-check">
                 <input type="checkbox" checked={!!form.openBox} onChange={cambiar('openBox')} />
-                <span>Open Box (caja abierta / tester)</span>
+                <span>Open Box (caja abierta / tester). Si no lo marcas, se muestra como Sellado</span>
               </label>
 
               <label className="adm-check">

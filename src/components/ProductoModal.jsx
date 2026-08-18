@@ -118,7 +118,11 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
             <h2 className="pm-nombre">{nombre}</h2>
             <div className="pm-sub-fila">
               {subtitulo && <p className="pm-familia">{subtitulo}</p>}
-              {openBox && <span className="pm-openbox">Open Box</span>}
+              {openBox ? (
+                <span className="pm-openbox">Open Box</span>
+              ) : (
+                <span className="pm-sellado">Sellado</span>
+              )}
               {agotado && <span className="pm-agotado">Agotado</span>}
               {quedanPocas && (
                 <span className="pm-pocas">

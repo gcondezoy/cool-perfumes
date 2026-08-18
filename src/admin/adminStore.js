@@ -250,7 +250,9 @@ export function calcularMetricas(lista) {
   const valor = lista.reduce((s, p) => s + (Number(p.precio) || 0), 0)
   const promedio = total ? Math.round(valor / total) : 0
   const enOferta = lista.filter((p) => p.precioAntes)
-  const destacados = lista.filter((p) => p.destacado)
+  // La tienda etiqueta cada perfume como Open Box o Sellado; el conteo de
+  // "destacados" se retiró junto con esa etiqueta.
+  const openBox = lista.filter((p) => p.openBox)
 
   // Descuento promedio de los productos en oferta
   const descuentoPromedio = enOferta.length
@@ -306,7 +308,7 @@ export function calcularMetricas(lista) {
   const recientes = [...lista].slice(0, 5)
 
   return {
-    total, valor, promedio, enOferta: enOferta.length, destacados: destacados.length,
+    total, valor, promedio, enOferta: enOferta.length, openBox: openBox.length,
     descuentoPromedio, porGenero, porMarca, totalMarcas, porRangoPrecio, salud,
     masCaro, masBarato, recientes,
   }

@@ -7,7 +7,7 @@ import { useReveal } from '../lib/useReveal.js'
 import { imagenOptimizada, imagenSrcSet } from '../lib/imagenUrl.js'
 
 export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index = 0 }) {
-  const { nombre, marca, notas, ml, precio, precioAntes, destacado, openBox, concentracion, imagen } =
+  const { nombre, marca, notas, ml, precio, precioAntes, openBox, concentracion, imagen } =
     producto
 
   // "Agotado" cubre tanto el interruptor manual como el stock en cero.
@@ -75,8 +75,13 @@ export default function ProductCard({ producto, onAgregar, onAbrirDetalle, index
             <span className="card-agotado-tag">Agotado</span>
           ) : (
             <>
-              {openBox && <span className="badge badge-openbox">Open Box</span>}
-              {!openBox && destacado && <span className="badge">Destacado</span>}
+              {/* El diferenciador es el estado del frasco: o viene abierto
+                  (Open Box) o viene sellado. Siempre se muestra uno u otro. */}
+              {openBox ? (
+                <span className="badge badge-openbox">Open Box</span>
+              ) : (
+                <span className="badge badge-sellado">Sellado</span>
+              )}
               {descuento && <span className="badge badge-oferta">-{descuento}%</span>}
               {quedanPocas && (
                 <span className="card-pocas">

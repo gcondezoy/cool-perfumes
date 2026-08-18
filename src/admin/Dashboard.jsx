@@ -100,9 +100,9 @@ export default function Dashboard({ productos, pedidos, onVerProductos, onVerPed
     },
     {
       icono: Star,
-      etiqueta: 'Destacados',
-      valor: m.destacados,
-      pie: 'Aparecen con etiqueta en la tienda',
+      etiqueta: 'Open Box',
+      valor: m.openBox,
+      pie: `El resto (${m.total - m.openBox}) se muestra como Sellado`,
     },
   ]
 

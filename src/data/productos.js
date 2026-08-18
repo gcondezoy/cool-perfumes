@@ -12,7 +12,8 @@
 //   ml        -> tamaño del frasco en mililitros
 //   precio    -> precio en soles (solo número)
 //   precioAntes -> precio tachado para ofertas (opcional)
-//   destacado -> true para mostrar la etiqueta "Destacado"
+//   openBox   -> true muestra la etiqueta "Open Box"; false, "Sellado"
+//   destacado -> ya no se usa: la columna se conserva por compatibilidad
 //   imagen    -> URL de la foto (vertical, 800x1000 px recomendado)
 //
 //  --- Ficha completa (se ve al hacer clic en el producto) ---

@@ -443,14 +443,22 @@ ol, ul { list-style: none; }
   background: var(--accent);
   color: #fff;
 }
+/* Los dos estados del frasco. Open Box va en oscuro (es la excepción,
+   conviene que se note) y Sellado en claro sobre la foto. */
 .badge-openbox {
   background: var(--ink);
   color: var(--paper);
   letter-spacing: 0.12em;
 }
+.badge-sellado {
+  background: rgba(250, 249, 247, 0.92);
+  color: var(--ink-soft);
+  letter-spacing: 0.14em;
+  border: 1px solid var(--line-soft);
+}
 
 /* Aviso de últimas unidades: abajo de la foto, para no chocar con
-   las etiquetas de Destacado / Oferta que van arriba. */
+   las etiquetas de Sellado / Open Box / Oferta que van arriba. */
 .card-pocas {
   position: absolute;
   left: 12px; bottom: 12px;
@@ -958,6 +966,18 @@ ol, ul { list-style: none; }
   text-transform: uppercase;
 }
 .pm-agotado { background: #6f6c64; }
+.pm-sellado {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 11px;
+  border-radius: var(--r-pill);
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
 .pm-pocas {
   display: inline-flex;
   align-items: center;
