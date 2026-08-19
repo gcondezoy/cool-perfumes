@@ -443,18 +443,20 @@ ol, ul { list-style: none; }
   background: var(--accent);
   color: #fff;
 }
-/* Los dos estados del frasco. Open Box va en oscuro (es la excepción,
-   conviene que se note) y Sellado en claro sobre la foto. */
+/* Los dos estados del frasco, como los pidió el cliente:
+   Open Box en blanco con letra gris, Sellado en negro con letra blanca.
+   El borde del blanco no es decorativo: sin él la etiqueta desaparece
+   sobre las fotos de fondo claro, que son la mayoría. */
 .badge-openbox {
-  background: var(--ink);
-  color: var(--paper);
+  background: #fff;
+  color: #6f6c64;
   letter-spacing: 0.12em;
+  border: 1px solid var(--line);
 }
 .badge-sellado {
-  background: rgba(250, 249, 247, 0.92);
-  color: var(--ink-soft);
+  background: var(--ink);
+  color: #fff;
   letter-spacing: 0.14em;
-  border: 1px solid var(--line-soft);
 }
 
 /* Aviso de últimas unidades: abajo de la foto, para no chocar con
@@ -966,14 +968,19 @@ ol, ul { list-style: none; }
   text-transform: uppercase;
 }
 .pm-agotado { background: #6f6c64; }
+/* Mismos colores que en la tarjeta: Open Box blanco con letra gris. */
+.pm-openbox {
+  background: #fff;
+  border: 1px solid var(--line);
+  color: #6f6c64;
+}
 .pm-sellado {
   display: inline-flex;
   align-items: center;
   padding: 3px 11px;
   border-radius: var(--r-pill);
-  background: var(--paper-2);
-  border: 1px solid var(--line);
-  color: var(--ink-soft);
+  background: var(--ink);
+  color: #fff;
   font-size: 0.66rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
