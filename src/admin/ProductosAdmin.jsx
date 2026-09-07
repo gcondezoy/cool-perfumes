@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import {
   PencilSimple, Trash, Plus, X, DownloadSimple,
   ArrowCounterClockwise, UploadSimple, Spinner, FunnelSimple,
+  ArrowUp, ArrowDown, ArrowLineUp,
 } from '@phosphor-icons/react'
 import { exportarJSON, modoLocal, RANGOS_PRECIO } from './adminStore.js'
 import { marca, concentraciones } from '../config.js'
@@ -56,7 +57,7 @@ function cumpleFiltro(p, filtro) {
 }
 
 export default function ProductosAdmin({
-  productos, onCrear, onActualizar, onEliminar, onRestaurar, onSubirImagen,
+  productos, onCrear, onActualizar, onEliminar, onReordenar, onRestaurar, onSubirImagen,
   filtroExterno, onLimpiarFiltro,
 }) {
   const [busqueda, setBusqueda] = useState('')
@@ -84,6 +85,20 @@ export default function ProductosAdmin({
       (p.familia || '').toLowerCase().includes(q)
     )
   })
+
+  // Solo se puede reordenar viendo el catálogo COMPLETO: dentro de una
+  // búsqueda o un filtro, "subir una posición" no querría decir nada
+  // porque los productos de en medio están escondidos.
+  const ordenable = !busqueda.trim() && !filtroTabla
+
+  // Mueve un producto a otra posición y guarda el catálogo entero.
+  const mover = (desde, hasta) => {
+    if (!ordenable || hasta < 0 || hasta >= productos.length || desde === hasta) return
+    const nueva = [...productos]
+    const [movido] = nueva.splice(desde, 1)
+    nueva.splice(hasta, 0, movido)
+    onReordenar?.(nueva)
+  }
 
   const abrirNuevo = () => {
     setForm(VACIO)
@@ -231,10 +246,26 @@ export default function ProductosAdmin({
         onChange={(e) => setBusqueda(e.target.value)}
       />
 
+      <p className="adm-ayuda adm-ayuda-orden">
+        {ordenable ? (
+          <>
+            Este es el orden en que tus clientes ven el catálogo. Usa las flechas
+            para subir o bajar un perfume, y <ArrowLineUp size={13} weight="bold" /> para
+            mandarlo al principio. Se guarda solo.
+          </>
+        ) : (
+          <>
+            Para cambiar el orden, quita la búsqueda o el filtro: hay que ver el
+            catálogo completo para poder mover un perfume de sitio.
+          </>
+        )}
+      </p>
+
       <div className="adm-tabla-wrap">
         <table className="adm-tabla">
           <thead>
             <tr>
+              <th className="adm-th-orden">Orden</th>
               <th></th>
               <th>Marca</th>
               <th>Producto</th>
@@ -247,8 +278,39 @@ export default function ProductosAdmin({
             </tr>
           </thead>
           <tbody>
-            {filtrados.map((p) => (
+            {filtrados.map((p, i) => (
               <tr key={p.id}>
+                <td>
+                  <div className="adm-orden">
+                    <span className="adm-orden-num">{ordenable ? i + 1 : '·'}</span>
+                    <div className="adm-orden-btns">
+                      <button
+                        onClick={() => mover(i, i - 1)}
+                        disabled={!ordenable || i === 0}
+                        title="Subir una posición"
+                        aria-label={`Subir ${p.marca} ${p.nombre} una posición`}
+                      >
+                        <ArrowUp size={14} weight="bold" />
+                      </button>
+                      <button
+                        onClick={() => mover(i, i + 1)}
+                        disabled={!ordenable || i === filtrados.length - 1}
+                        title="Bajar una posición"
+                        aria-label={`Bajar ${p.marca} ${p.nombre} una posición`}
+                      >
+                        <ArrowDown size={14} weight="bold" />
+                      </button>
+                      <button
+                        onClick={() => mover(i, 0)}
+                        disabled={!ordenable || i === 0}
+                        title="Mandar al principio del catálogo"
+                        aria-label={`Mandar ${p.marca} ${p.nombre} al principio`}
+                      >
+                        <ArrowLineUp size={14} weight="bold" />
+                      </button>
+                    </div>
+                  </div>
+                </td>
                 <td>
                   {p.imagen ? (
                     <img

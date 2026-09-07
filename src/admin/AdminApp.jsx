@@ -7,6 +7,7 @@ import {
   crearProducto,
   actualizarProducto,
   eliminarProducto,
+  guardarOrden,
   restaurarSemilla,
   subirImagen,
   iniciarSesion,
@@ -123,6 +124,21 @@ export default function AdminApp() {
   const onActualizar = conManejo(actualizarProducto)
   const onEliminar = conManejo(eliminarProducto)
   const onRestaurar = conManejo(restaurarSemilla)
+
+  // Reordenar va aparte: la lista se pinta ANTES de guardar para que la
+  // flecha responda al instante y no haya que esperar a la base de datos.
+  // Si el guardado falla, se recarga lo que sí está guardado.
+  const onReordenar = async (nuevaLista) => {
+    setProductos(nuevaLista)
+    try {
+      const guardada = await guardarOrden(nuevaLista)
+      if (Array.isArray(guardada)) setProductos(guardada)
+      setErrorDatos('')
+    } catch (e) {
+      setErrorDatos(e.message)
+      await cargar()
+    }
+  }
 
   const entrar = async (e) => {
     e.preventDefault()
@@ -306,6 +322,7 @@ export default function AdminApp() {
             onCrear={onCrear}
             onActualizar={onActualizar}
             onEliminar={onEliminar}
+            onReordenar={onReordenar}
             onRestaurar={onRestaurar}
             onSubirImagen={subirImagen}
             filtroExterno={filtroExterno}

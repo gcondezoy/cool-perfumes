@@ -35,6 +35,8 @@ function desdeDB(fila) {
     decant10ml: fila.decant_10ml != null ? Number(fila.decant_10ml) : undefined,
     imagen: fila.imagen || '',
     concentracion: fila.concentracion || '',
+    // Orden manual del catálogo. null = todavía sin ordenar (va primero).
+    orden: fila.orden != null ? Number(fila.orden) : null,
   }
 }
 
@@ -60,6 +62,9 @@ function haciaDB(p) {
     // Nota: las columnas descripcion, notas_salida/corazon/fondo, duracion,
     // estela y ocasion ya no se editan desde el panel. NO se incluyen aquí a
     // propósito: así una edición no borra los datos que ya existan en la BD.
+    //
+    // "orden" tampoco se incluye a propósito: lo escribe solo guardarOrden().
+    // Si fuera por aquí, editar el precio de un perfume lo movería de sitio.
   }
 }
 
@@ -99,19 +104,46 @@ export function getProductosCache() {
 export async function listarProductos() {
   if (modoLocal) return leerLocal()
 
+  // Manda el orden manual. Los que todavía no tienen número (productos
+  // recién creados) van primero, y entre ellos el más nuevo arriba.
   const { data, error } = await supabase
+    .from('productos')
+    .select('*')
+    .order('orden', { ascending: true, nullsFirst: true })
+    .order('creado_en', { ascending: false })
+
+  if (!error) return (data || []).map(desdeDB)
+
+  // Si la columna "orden" todavía no existe (falta ejecutar
+  // supabase/orden.sql), la tienda NO puede quedarse vacía: se reintenta
+  // ordenando por fecha, que es como funcionaba antes. El panel sí avisa
+  // de que falta el SQL cuando intentas reordenar.
+  if (!faltaColumnaOrden(error)) {
+    throw new Error(mensajeError('No se pudo cargar el catálogo', error))
+  }
+
+  const respaldo = await supabase
     .from('productos')
     .select('*')
     .order('creado_en', { ascending: false })
 
-  if (error) throw new Error('No se pudo cargar el catálogo: ' + error.message)
-  return (data || []).map(desdeDB)
+  if (respaldo.error) {
+    throw new Error('No se pudo cargar el catálogo: ' + respaldo.error.message)
+  }
+  return (respaldo.data || []).map(desdeDB)
+}
+
+// Postgres devuelve 42703 ("undefined column") cuando falta la columna.
+function faltaColumnaOrden(error) {
+  return error?.code === '42703' || /\borden\b/.test(error?.message || '')
 }
 
 export async function crearProducto(producto) {
   if (modoLocal) {
+    // Al principio de la lista, igual que en Supabase: un producto recién
+    // creado aparece primero hasta que se ordene a mano.
     const lista = leerLocal()
-    return escribirLocal([...lista, { ...producto, id: nuevoIdLocal(lista) }])
+    return escribirLocal([{ ...producto, id: nuevoIdLocal(lista) }, ...lista])
   }
 
   const { error } = await supabase.from('productos').insert(haciaDB(producto))
@@ -128,6 +160,9 @@ function mensajeError(prefijo, error) {
   if (m.includes('stock')) {
     return 'Falta agregar el control de stock a la base de datos. Ejecuta supabase/stock.sql en Supabase (SQL Editor).'
   }
+  if (m.includes('orden')) {
+    return 'Falta agregar el orden del catálogo a la base de datos. Ejecuta supabase/orden.sql en Supabase (SQL Editor).'
+  }
   if (m.includes('open_box') || m.includes('agotado')) {
     return 'Falta crear columnas nuevas en la base de datos. Ejecuta supabase/columnas-extra.sql en Supabase (SQL Editor).'
   }
@@ -142,6 +177,32 @@ export async function actualizarProducto(id, producto) {
 
   const { error } = await supabase.from('productos').update(haciaDB(producto)).eq('id', id)
   if (error) throw new Error(mensajeError('No se pudo actualizar', error))
+  return listarProductos()
+}
+
+// Guarda el orden del catálogo. Recibe la lista YA ordenada como debe
+// quedar y le asigna a cada producto su número de posición.
+//
+// Se numera de 10 en 10 (10, 20, 30…) para dejar hueco entre productos, y
+// solo se escriben en la base los que de verdad cambiaron de sitio: mover
+// un perfume una posición son dos filas, no el catálogo entero.
+export async function guardarOrden(lista) {
+  const conPosicion = lista.map((p, i) => ({ ...p, orden: (i + 1) * 10 }))
+
+  if (modoLocal) return escribirLocal(conPosicion)
+
+  const cambiados = conPosicion.filter((p, i) => lista[i].orden !== p.orden)
+  if (cambiados.length === 0) return conPosicion
+
+  const resultados = await Promise.all(
+    cambiados.map((p) =>
+      supabase.from('productos').update({ orden: p.orden }).eq('id', p.id),
+    ),
+  )
+
+  const fallo = resultados.find((r) => r.error)
+  if (fallo) throw new Error(mensajeError('No se pudo guardar el orden', fallo.error))
+
   return listarProductos()
 }
 

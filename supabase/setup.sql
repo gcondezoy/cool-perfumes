@@ -47,10 +47,16 @@ alter table public.productos add column if not exists agotado       boolean not 
 alter table public.productos add column if not exists decant_5ml    numeric;
 alter table public.productos add column if not exists decant_10ml   numeric;
 alter table public.productos add column if not exists stock         integer;
+-- Orden manual del catálogo (ver supabase/orden.sql)
+alter table public.productos add column if not exists orden         integer;
 
 -- Índice para ordenar por fecha de creación
 create index if not exists productos_creado_en_idx
   on public.productos (creado_en desc);
+
+-- Índice para el orden manual del catálogo
+create index if not exists productos_orden_idx
+  on public.productos (orden);
 
 -- ---------- 2. Seguridad (RLS) ----------
 -- Cualquiera puede LEER el catálogo (la tienda es pública).

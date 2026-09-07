@@ -551,6 +551,46 @@
 .adm-acciones button:hover { background: var(--paper); color: var(--ink); }
 .adm-acciones .adm-borrar:hover { color: #a13c2a; }
 
+/* ---------- Orden manual del catálogo ---------- */
+.adm-th-orden { width: 1%; }
+.adm-ayuda-orden {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin: -4px 0 14px;
+  line-height: 1.5;
+}
+.adm-ayuda-orden svg { vertical-align: -2px; }
+
+.adm-orden { display: flex; align-items: center; gap: 8px; }
+.adm-orden-num {
+  min-width: 20px;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--faint);
+  text-align: right;
+}
+.adm-orden-btns { display: flex; gap: 2px; }
+.adm-orden-btns button {
+  display: grid; place-items: center;
+  width: 26px; height: 26px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  background: var(--paper-2);
+  transition: background 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+.adm-orden-btns button:hover:not(:disabled) {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+.adm-orden-btns button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 .adm-vacio-texto { padding: 28px; text-align: center; color: var(--faint); font-size: 0.9rem; }
 
 /* ---------- Formularios y botones ---------- */
