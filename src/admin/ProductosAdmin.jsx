@@ -404,10 +404,10 @@ export default function ProductosAdmin({
                 </select>
               </label>
 
-              {/* Estado del frasco: es la etiqueta que ve el cliente en la
-                  tarjeta. Va como lista y no como casilla suelta para que
-                  las dos opciones se vean, en vez de tener que deducir que
-                  "sin marcar" significa sellado. */}
+              {/* Estado del frasco: ya NO se muestra en la tienda (el cliente
+                  pidió quitar las etiquetas). Se mantiene como control interno
+                  para que sepa qué frascos son tester, por eso la ayuda avisa
+                  que el comprador no lo ve. */}
               <label className="adm-campo">
                 <span>Estado del frasco</span>
                 <select
@@ -418,6 +418,9 @@ export default function ProductosAdmin({
                   <option value="sellado">Sellado</option>
                   <option value="openbox">Open Box (caja abierta / tester)</option>
                 </select>
+                <small className="adm-ayuda">
+                  Solo para tu control: el comprador no ve este dato en la tienda.
+                </small>
               </label>
 
               <label className="adm-campo">

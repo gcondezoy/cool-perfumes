@@ -102,7 +102,8 @@ export default function Dashboard({ productos, pedidos, onVerProductos, onVerPed
       icono: Star,
       etiqueta: 'Open Box',
       valor: m.openBox,
-      pie: `El resto (${m.total - m.openBox}) se muestra como Sellado`,
+      // La etiqueta ya no se muestra en la tienda: este conteo es control interno.
+      pie: `${m.total - m.openBox} sellados · dato solo para ti`,
     },
   ]
 

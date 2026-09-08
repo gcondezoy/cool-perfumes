@@ -70,15 +70,17 @@ La tienda calcula sola el porcentaje y muestra la etiqueta roja de descuento.
 
 ---
 
-## Destacar un perfume
+## Anotar si un frasco es Open Box
 
-Marca la casilla **"Marcar como destacado"** al final del formulario. Aparecerá con una etiqueta *Destacado* en la tienda. Úsalo con tus productos estrella o los que más quieras vender.
+En el formulario hay un campo **"Estado del frasco"** con dos opciones:
 
-## Marcar un perfume como Open Box
+- **Sellado** — el frasco viene cerrado de fábrica
+- **Open Box** — caja abierta / tester
 
-Si un perfume es **caja abierta / tester**, marca la casilla **"Open Box"** en el
-formulario. Aparecerá con una etiqueta *Open Box* en su tarjeta y en su ficha,
-para que el cliente sepa que es una presentación abierta.
+> **Es solo para tu control.** El comprador **no ve** este dato en la tienda:
+> no aparece ninguna etiqueta en la tarjeta ni en la ficha. Te sirve a ti para
+> saber de un vistazo qué frascos son tester, y lo verás también en la lista de
+> Productos y en el Dashboard.
 
 ## Vender un perfume en decant (5 ml y 10 ml)
 
@@ -191,7 +193,7 @@ Es la pantalla de inicio. Te dice cómo está tu tienda:
 - **Productos en catálogo** — cuántos perfumes tienes y de cuántas marcas.
 - **Valor del catálogo** — cuánto suman todos tus precios.
 - **En oferta** — cuántos tienen descuento.
-- **Destacados** — cuántos llevan etiqueta.
+- **Open Box** — cuántos frascos son tester y cuántos están sellados (dato interno tuyo).
 
 ### "Qué te falta completar"
 Es la sección más útil. Te avisa si hay perfumes **sin foto**, **sin precio** o **sin datos**. Un catálogo completo se ve más profesional y vende más. Si sale el check verde, está todo en orden.

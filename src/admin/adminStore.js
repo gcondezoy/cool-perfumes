@@ -311,8 +311,8 @@ export function calcularMetricas(lista) {
   const valor = lista.reduce((s, p) => s + (Number(p.precio) || 0), 0)
   const promedio = total ? Math.round(valor / total) : 0
   const enOferta = lista.filter((p) => p.precioAntes)
-  // La tienda etiqueta cada perfume como Open Box o Sellado; el conteo de
-  // "destacados" se retiró junto con esa etiqueta.
+  // Open Box ya no se muestra en la tienda: el conteo queda como control
+  // interno del panel para saber cuántos frascos son tester.
   const openBox = lista.filter((p) => p.openBox)
 
   // Descuento promedio de los productos en oferta
