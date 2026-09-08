@@ -32,7 +32,7 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
 
   if (!producto) return null
 
-  const { nombre, marca, ml, imagen, concentracion, genero, openBox } = producto
+  const { nombre, marca, ml, imagen, concentracion, genero } = producto
 
   const agotado = estaAgotado(producto)
   const quedanPocas = stockBajo(producto)
@@ -118,11 +118,6 @@ export default function ProductoModal({ producto, onCerrar, onAgregar }) {
             <h2 className="pm-nombre">{nombre}</h2>
             <div className="pm-sub-fila">
               {subtitulo && <p className="pm-familia">{subtitulo}</p>}
-              {openBox ? (
-                <span className="pm-openbox">Open Box</span>
-              ) : (
-                <span className="pm-sellado">Sellado</span>
-              )}
               {agotado && <span className="pm-agotado">Agotado</span>}
               {quedanPocas && (
                 <span className="pm-pocas">
