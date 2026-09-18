@@ -233,6 +233,21 @@ En la lista de **Productos**, al final de cada fila:
 
 > ⚠️ Eliminar **no se puede deshacer**. Si dudas, mejor edítalo.
 
+### Eliminar borra el perfume de TODA la tienda
+
+Aunque veas dos pestañas, cada perfume es **un solo producto**. Si está en La
+colección y en Decants, el basurero lo borra **de las dos**, no solo de la
+pestaña donde estás. El panel te lo advierte antes de borrar.
+
+Si lo que quieres es sacarlo de **una sola** sección, no lo elimines: edítalo.
+
+| Quiero… | Qué hacer |
+|---|---|
+| Sacarlo de La colección y dejarlo en Decants | Editar → **"¿Cómo se vende?"** → **Solo en decant** |
+| Sacarlo de Decants y dejarlo en La colección | Editar → borrar sus **precios de decant** |
+| Dejar de venderlo un tiempo | Marcar **Agotado** (vuelve cuando lo desmarques) |
+| Borrarlo para siempre | Basurero 🗑️ |
+
 ---
 
 ## Entender el Dashboard

@@ -29,6 +29,32 @@ const SECCIONES = {
   },
 }
 
+// Aviso antes de eliminar. Las pestañas parecen listas separadas, pero
+// cada perfume es UN solo producto: si está en las dos secciones, el
+// basurero lo borra de las dos. Se avisa con todas las letras y se
+// explica cómo sacarlo de una sola sección sin perderlo.
+function mensajeEliminar(p, pestana) {
+  const nombre = `"${p.marca} ${p.nombre}"`
+  const enLasDos = SECCIONES.coleccion.pertenece(p) && SECCIONES.decants.pertenece(p)
+
+  if (!enLasDos) {
+    return `¿Eliminar ${nombre}? Esta acción no se puede deshacer.`
+  }
+
+  const [otra, comoSacarlo] =
+    pestana === 'decants'
+      ? ['La colección', 'edítalo y borra sus precios de decant']
+      : ['Decants', 'edítalo y en "¿Cómo se vende?" elige "Solo en decant"']
+  const aqui = SECCIONES[pestana].nombre
+
+  return (
+    `¿Eliminar ${nombre}?\n\n` +
+    `Este perfume está en La colección Y en Decants. Eliminarlo lo borra de ` +
+    `TODA la tienda: también desaparecerá de ${otra}. No se puede deshacer.\n\n` +
+    `Si solo quieres sacarlo de ${aqui}, pulsa Cancelar, ${comoSacarlo}.`
+  )
+}
+
 // Precio de una medida de decant para la tabla ("—" si no se vende).
 function celdaDecant(valor) {
   return valor ? `${marca.moneda} ${valor}` : '—'
@@ -244,7 +270,7 @@ export default function ProductosAdmin({
   }
 
   const eliminar = async (p) => {
-    if (window.confirm(`¿Eliminar "${p.marca} ${p.nombre}"? Esta acción no se puede deshacer.`)) {
+    if (window.confirm(mensajeEliminar(p, pestana))) {
       try {
         await onEliminar(p.id)
       } catch (e) {
