@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { marca as config } from '../config.js'
 import { estaAgotado } from '../lib/stock.js'
+import { esSoloDecant, precioDesdeDecant } from '../lib/presentaciones.js'
 
 // =============================================================
 //  DATOS ESTRUCTURADOS DEL CATÁLOGO (schema.org)
@@ -32,10 +33,13 @@ export default function DatosEstructurados({ productos }) {
           ...(p.marca && { brand: { '@type': 'Brand', name: p.marca } }),
           ...(p.imagen && { image: p.imagen }),
           ...(p.familia && { category: p.familia }),
-          ...(p.ml && { size: `${p.ml} ml` }),
+          // El tamaño del frasco no aplica si solo se vende en decant.
+          ...(p.ml && !esSoloDecant(p) && { size: `${p.ml} ml` }),
           offers: {
             '@type': 'Offer',
-            price: Number(p.precio) || 0,
+            // Un perfume de solo decant no tiene precio de frasco: se
+            // publica el del decant más barato (si no, Google vería S/ 0).
+            price: esSoloDecant(p) ? precioDesdeDecant(p) || 0 : Number(p.precio) || 0,
             priceCurrency: 'PEN',
             url: `${config.sitio}/#catalogo`,
             availability: estaAgotado(p)

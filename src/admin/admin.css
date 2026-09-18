@@ -527,6 +527,8 @@
 }
 .adm-pill-openbox { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .adm-pill-agotado { background: #6f6c64; color: var(--paper); border-color: #6f6c64; }
+/* Solo decant: mismo terracota que la sección de decants en la tienda */
+.adm-pill-decant { background: rgba(138, 59, 46, 0.1); color: #8a3b2e; border-color: rgba(138, 59, 46, 0.25); }
 
 /* Columna de stock en la tabla */
 .adm-stock {
@@ -562,6 +564,22 @@
   line-height: 1.5;
 }
 .adm-ayuda-orden svg { vertical-align: -2px; }
+
+/* Aviso: lo que buscas está solo en la otra pestaña */
+.adm-aviso-otra {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: -4px 0 14px;
+  padding: 10px 14px;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.adm-aviso-otra strong { color: var(--ink); font-weight: 500; }
+.adm-aviso-otra:hover { border-color: var(--ink); color: var(--ink); }
 
 .adm-orden { display: flex; align-items: center; gap: 8px; }
 .adm-orden-num {
@@ -662,6 +680,16 @@
   color: var(--ink);
 }
 .adm-separador > p { font-size: 0.8rem; color: var(--faint); margin-top: 4px; }
+
+/* Los tres precios de decant (3, 5 y 10 ml) en una sola fila */
+.adm-decants-fila {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+@media (max-width: 520px) {
+  .adm-decants-fila { grid-template-columns: 1fr; }
+}
 
 /* ---------- Modal ---------- */
 .adm-modal-fondo {

@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { listarProductos, getProductosCache, suscribir } from './admin/adminStore.js'
-import { itemDeCarrito } from './lib/presentaciones.js'
+import { itemDeCarrito, esSoloDecant } from './lib/presentaciones.js'
 import { estaAgotado, unidadesDisponibles } from './lib/stock.js'
 import { categorias } from './config.js'
 
@@ -81,6 +81,8 @@ export default function App() {
     // Seguridad: un producto agotado nunca entra al carrito.
     if (estaAgotado(producto)) return
     const item = itemDeCarrito(producto, presentacion)
+    // Un perfume de solo decant nunca entra al carrito como frasco.
+    if (esSoloDecant(producto) && item.presentacion === 'frasco') return
     // El stock limita solo el frasco completo (los decants se preparan).
     const tope = item.presentacion === 'frasco' ? unidadesDisponibles(producto) : Infinity
 
@@ -143,10 +145,13 @@ export default function App() {
   }, [])
 
   // --- Filtrado y búsqueda ---
+  // "La colección" es de frascos: los perfumes que se venden solo en
+  // decant quedan fuera y aparecen únicamente en la sección de decants.
   const productosFiltrados = useMemo(() => {
     const q = busqueda.trim().toLowerCase()
     const texto = (v) => (v || '').toString().toLowerCase()
     return productos.filter((p) => {
+      if (esSoloDecant(p)) return false
       const coincideGenero = filtro === 'todos' || p.genero === filtro
       const coincideBusqueda =
         !q ||

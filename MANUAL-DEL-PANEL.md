@@ -82,21 +82,36 @@ En el formulario hay un campo **"Estado del frasco"** con dos opciones:
 > saber de un vistazo qué frascos son tester, y lo verás también en la lista de
 > Productos y en el Dashboard.
 
-## Vender un perfume en decant (5 ml y 10 ml)
+## Vender un perfume en decant (3 ml, 5 ml y 10 ml)
 
 La tienda tiene **dos secciones separadas** para que el cliente no se confunda:
 
 - **La colección** → los frascos completos
-- **Decants** → las porciones de 5 ml y 10 ml
+- **Decants** → las porciones de 3 ml, 5 ml y 10 ml
 
 **No cargas el decant como un producto aparte.** Se activa desde el mismo
 perfume: en el formulario, busca la sección **"Decants"** y pon el precio:
 
-- **Precio decant 5 ml** → por ejemplo `30`
-- **Precio decant 10 ml** → por ejemplo `50`
+- **Decant 3 ml** → por ejemplo `15`
+- **Decant 5 ml** → por ejemplo `30`
+- **Decant 10 ml** → por ejemplo `50`
 
-**Deja vacío el que no vendas.** Si dejas los dos vacíos, ese perfume solo
+**Deja vacío el que no vendas.** Si dejas los tres vacíos, ese perfume solo
 aparece en la sección de perfumes.
+
+### Perfumes que vendes SOLO en decant
+
+Si de un perfume no vendes el frasco (solo lo decantas), en el formulario
+cambia **"¿Cómo se vende?"** a **"Solo en decant"**.
+
+- Desaparecen los campos de precio del frasco y de stock: no hacen falta.
+- Tienes que poner **al menos un precio de decant**. Si no pones ninguno, el
+  panel no te deja guardar, porque ese perfume no se vería en ningún lado.
+- En la tienda aparece **solo en la sección Decants**, no en La colección.
+- En la lista de Productos lo verás con la etiqueta **Solo decant**.
+
+Para dejar de ofrecerlo un tiempo, marca **Agotado**: su tarjeta desaparece
+de la sección Decants hasta que lo desmarques.
 
 ### Qué ve el cliente
 - En la sección **Decants** aparece una tarjeta de ese perfume con los tamaños
@@ -172,6 +187,40 @@ WhatsApp** (por si quiere que le avises cuando vuelva a haber).
 
 No hace falta borrarlo: cuando vuelvas a tener stock, solo desmarca la casilla
 y vuelve al catálogo principal.
+
+---
+
+## Ordenar tu catálogo
+
+Tú decides qué perfume sale primero. En **Productos** hay dos pestañas, una por
+cada sección de la tienda:
+
+| Pestaña | Qué ordena en la tienda |
+|---|---|
+| **La colección** | Los frascos completos |
+| **Decants** | La sección de decants (incluye los perfumes que vendes *solo* en decant) |
+
+**Cada pestaña tiene su propio orden.** Un perfume que vendes en frasco y en
+decant aparece en las dos, y puede ir primero en una y último en la otra. Mover
+algo en Decants **no** cambia La colección, ni al revés.
+
+En la columna **Orden** tienes tres botones:
+
+- **↑** sube el perfume una posición
+- **↓** lo baja una posición
+- **⤒** lo manda directo al principio
+
+El número de la izquierda es la posición exacta en que lo ve tu cliente. **Se
+guarda solo**, no hay que apretar nada más.
+
+### Cosas a tener en cuenta
+- Mientras hay una **búsqueda o un filtro**, las flechas se desactivan: para
+  mover un perfume tienes que ver la sección completa. Quita el filtro y listo.
+- Un **producto nuevo aparece primero** en su sección hasta que lo acomodes.
+- Si buscas un perfume en una pestaña y está en la otra, el panel te avisa y te
+  lleva con un clic.
+- Si pulsas **Nuevo producto** estando en la pestaña Decants, el formulario ya
+  viene marcado como "Solo en decant" (puedes cambiarlo).
 
 ---
 

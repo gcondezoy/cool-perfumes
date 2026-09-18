@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Plus, Check } from '@phosphor-icons/react'
 import { marca as config } from '../config.js'
-import { decantsDe } from '../lib/presentaciones.js'
+import { decantsDe, tamanosOfrecidos } from '../lib/presentaciones.js'
+import { ordenarPor, CAMPO_DECANTS } from '../lib/orden.js'
 import { estaAgotado } from '../lib/stock.js'
 import { useReveal } from '../lib/useReveal.js'
 import { imagenOptimizada, imagenSrcSet } from '../lib/imagenUrl.js'
@@ -76,11 +77,27 @@ function TarjetaDecant({ producto, onAgregar, index }) {
   )
 }
 
+// "3 ml, 5 ml y 10 ml" a partir de [3, 5, 10].
+function listarMedidas(medidas) {
+  const textos = medidas.map((ml) => `${ml} ml`)
+  if (textos.length <= 1) return textos.join('')
+  return `${textos.slice(0, -1).join(', ')} y ${textos[textos.length - 1]}`
+}
+
 export default function SeccionDecants({ productos, onAgregar }) {
-  const conDecant = productos.filter((p) => !estaAgotado(p) && decantsDe(p).length > 0)
+  // Incluye los perfumes que se venden solo en decant: esta es la única
+  // sección donde aparecen. Va en SU propio orden (el de la pestaña
+  // Decants del panel), no en el de La colección.
+  const conDecant = ordenarPor(
+    productos.filter((p) => !estaAgotado(p) && decantsDe(p).length > 0),
+    CAMPO_DECANTS,
+  )
 
   // Si no hay ningún decant cargado, la sección no se muestra.
   if (conDecant.length === 0) return null
+
+  // El texto nombra solo las medidas que de verdad se ofrecen.
+  const medidas = listarMedidas(tamanosOfrecidos(conDecant))
 
   return (
     <section className="decants" id="decants">
@@ -88,9 +105,9 @@ export default function SeccionDecants({ productos, onAgregar }) {
         <div className="dec-head">
           <h2 className="section-title">Decants</h2>
           <p className="section-sub dec-intro">
-            Porciones del perfume original en atomizador de 5 ml y 10 ml.
-            Ideales para probar una fragancia antes de comprar el frasco
-            completo, o para llevarla contigo.
+            Porciones del perfume original en atomizador de {medidas}.
+            Ideales para probar una fragancia antes de decidirte, o para
+            llevarla contigo.
           </p>
         </div>
 

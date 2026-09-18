@@ -19,6 +19,7 @@ import {
   listarPedidos, cambiarEstadoPedido, eliminarPedido, suscribirPedidos,
 } from './pedidosStore.js'
 import { marca } from '../config.js'
+import { aplicarOrden } from '../lib/orden.js'
 import Dashboard from './Dashboard.jsx'
 import ProductosAdmin from './ProductosAdmin.jsx'
 import PedidosAdmin from './PedidosAdmin.jsx'
@@ -128,10 +129,13 @@ export default function AdminApp() {
   // Reordenar va aparte: la lista se pinta ANTES de guardar para que la
   // flecha responda al instante y no haya que esperar a la base de datos.
   // Si el guardado falla, se recarga lo que sí está guardado.
-  const onReordenar = async (nuevaLista) => {
-    setProductos(nuevaLista)
+  //
+  // Recibe los productos de UNA sección (La colección o Decants) y el
+  // campo de orden de esa sección: cada una se ordena por separado.
+  const onReordenar = async (seccion, campo) => {
+    setProductos((todos) => aplicarOrden(todos, seccion, campo))
     try {
-      const guardada = await guardarOrden(nuevaLista)
+      const guardada = await guardarOrden(seccion, campo)
       if (Array.isArray(guardada)) setProductos(guardada)
       setErrorDatos('')
     } catch (e) {

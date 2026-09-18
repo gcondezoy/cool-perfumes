@@ -13,7 +13,12 @@
 // A partir de esta cantidad se avisa "últimas unidades".
 export const UMBRAL_STOCK_BAJO = 3
 
+// Un perfume de solo decant no tiene frascos a la venta, así que su stock
+// no cuenta: si quedara un 0 guardado de cuando se vendía en frasco, lo
+// ocultaría de la sección de decants sin que nadie entienda por qué.
+// Para esos perfumes solo vale el interruptor manual "Agotado".
 export function tieneControlDeStock(producto) {
+  if (producto?.soloDecant) return false
   return producto?.stock !== null && producto?.stock !== undefined
 }
 

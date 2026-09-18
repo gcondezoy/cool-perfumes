@@ -700,7 +700,15 @@ ol, ul { list-style: none; }
   object-fit: contain;
 }
 
-.dec-body { padding: 16px 16px 18px; display: flex; flex-direction: column; flex: 1; }
+.dec-body {
+  padding: 16px 16px 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  /* Permite que el selector de medidas se adapte al ancho de ESTA
+     tarjeta (ver @container más abajo), no al de la pantalla. */
+  container-type: inline-size;
+}
 .dec-marca {
   font-family: var(--sans);
   font-size: 0.62rem;
@@ -745,6 +753,23 @@ ol, ul { list-style: none; }
 }
 .dec-tamano-precio { font-size: 0.76rem; color: var(--ink-soft); }
 .dec-tamano-activo .dec-tamano-precio { color: var(--ink); }
+
+/* Tarjeta angosta (2 columnas en celular): tres medidas lado a lado
+   quedaban de ~44px y el precio se partía en varias líneas. Ahí se
+   apilan como lista: la medida a la izquierda y el precio a la derecha.
+   Aplica a todas las tarjetas angostas por igual, tengan 1, 2 o 3
+   medidas, para que la grilla se vea pareja. */
+@container (max-width: 200px) {
+  .dec-tamanos { flex-direction: column; gap: 6px; }
+  .dec-tamano {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+  .dec-tamano-ml { font-size: 0.95rem; }
+}
 
 .dec-agregar {
   width: 100%;

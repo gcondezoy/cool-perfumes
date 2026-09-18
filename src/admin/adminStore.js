@@ -7,6 +7,10 @@
 
 import { supabase, supabaseConfigurado, BUCKET_IMAGENES } from '../lib/supabase.js'
 import { comprimirImagen, comprimirADataURL } from '../lib/imagenes.js'
+import { esSoloDecant, sinPrecio } from '../lib/presentaciones.js'
+import {
+  CAMPO_COLECCION, COLUMNA_ORDEN, ordenarPor, aplicarOrden, posicionesDe,
+} from '../lib/orden.js'
 import { productos as semilla } from '../data/productos.js'
 
 const CLAVE = 'coolperfumes_productos_v1'
@@ -31,12 +35,17 @@ function desdeDB(fila) {
     // Stock: null = sin control de stock; 0 = agotado
     stock: fila.stock != null ? Number(fila.stock) : null,
     // Decants: null/vacío = ese perfume no se vende en esa medida
+    decant3ml: fila.decant_3ml != null ? Number(fila.decant_3ml) : undefined,
     decant5ml: fila.decant_5ml != null ? Number(fila.decant_5ml) : undefined,
     decant10ml: fila.decant_10ml != null ? Number(fila.decant_10ml) : undefined,
+    // true = no se vende en frasco, solo aparece en la sección de decants
+    soloDecant: !!fila.solo_decant,
     imagen: fila.imagen || '',
     concentracion: fila.concentracion || '',
-    // Orden manual del catálogo. null = todavía sin ordenar (va primero).
+    // Orden manual de cada sección (ver lib/orden.js).
+    // null = todavía sin ordenar (va primero).
     orden: fila.orden != null ? Number(fila.orden) : null,
+    ordenDecant: fila.orden_decant != null ? Number(fila.orden_decant) : null,
   }
 }
 
@@ -55,16 +64,19 @@ function haciaDB(p) {
     agotado: !!p.agotado,
     // Vacío = sin control de stock (se guarda como null, no como 0)
     stock: p.stock === '' || p.stock === null || p.stock === undefined ? null : Number(p.stock),
+    decant_3ml: p.decant3ml ? Number(p.decant3ml) : null,
     decant_5ml: p.decant5ml ? Number(p.decant5ml) : null,
     decant_10ml: p.decant10ml ? Number(p.decant10ml) : null,
+    solo_decant: !!p.soloDecant,
     imagen: p.imagen || null,
     concentracion: p.concentracion || null,
     // Nota: las columnas descripcion, notas_salida/corazon/fondo, duracion,
     // estela y ocasion ya no se editan desde el panel. NO se incluyen aquí a
     // propósito: así una edición no borra los datos que ya existan en la BD.
     //
-    // "orden" tampoco se incluye a propósito: lo escribe solo guardarOrden().
-    // Si fuera por aquí, editar el precio de un perfume lo movería de sitio.
+    // "orden" y "orden_decant" tampoco se incluyen a propósito: los escribe
+    // solo guardarOrden(). Si fueran por aquí, editar el precio de un
+    // perfume lo movería de sitio.
   }
 }
 
@@ -94,7 +106,7 @@ function nuevoIdLocal(lista) {
 
 // Lectura sincrónica inmediata (para el primer render sin parpadeo).
 export function getProductosCache() {
-  return modoLocal ? leerLocal() : []
+  return modoLocal ? ordenarPor(leerLocal(), CAMPO_COLECCION) : []
 }
 
 // =============================================================
@@ -102,7 +114,8 @@ export function getProductosCache() {
 // =============================================================
 
 export async function listarProductos() {
-  if (modoLocal) return leerLocal()
+  // Igual que en Supabase: manda el orden de La colección.
+  if (modoLocal) return ordenarPor(leerLocal(), CAMPO_COLECCION)
 
   // Manda el orden manual. Los que todavía no tienen número (productos
   // recién creados) van primero, y entre ellos el más nuevo arriba.
@@ -180,23 +193,24 @@ export async function actualizarProducto(id, producto) {
   return listarProductos()
 }
 
-// Guarda el orden del catálogo. Recibe la lista YA ordenada como debe
-// quedar y le asigna a cada producto su número de posición.
+// Guarda el orden de UNA sección de la tienda (ver lib/orden.js).
+// Recibe los productos de esa sección YA ordenados como deben quedar y el
+// campo de la sección: CAMPO_COLECCION o CAMPO_DECANTS.
 //
-// Se numera de 10 en 10 (10, 20, 30…) para dejar hueco entre productos, y
-// solo se escriben en la base los que de verdad cambiaron de sitio: mover
-// un perfume una posición son dos filas, no el catálogo entero.
-export async function guardarOrden(lista) {
-  const conPosicion = lista.map((p, i) => ({ ...p, orden: (i + 1) * 10 }))
+// Solo se escriben en la base los que de verdad cambiaron de sitio: mover
+// un perfume una posición son dos filas, no el catálogo entero. Y solo se
+// toca el orden de esa sección: reordenar Decants no mueve La colección.
+export async function guardarOrden(seccion, campo = CAMPO_COLECCION) {
+  if (modoLocal) return escribirLocal(aplicarOrden(leerLocal(), seccion, campo))
 
-  if (modoLocal) return escribirLocal(conPosicion)
-
-  const cambiados = conPosicion.filter((p, i) => lista[i].orden !== p.orden)
-  if (cambiados.length === 0) return conPosicion
+  const columna = COLUMNA_ORDEN[campo]
+  const posicion = posicionesDe(seccion)
+  const cambiados = seccion.filter((p) => p[campo] !== posicion.get(p.id))
+  if (cambiados.length === 0) return null
 
   const resultados = await Promise.all(
     cambiados.map((p) =>
-      supabase.from('productos').update({ orden: p.orden }).eq('id', p.id),
+      supabase.from('productos').update({ [columna]: posicion.get(p.id) }).eq('id', p.id),
     ),
   )
 
@@ -308,9 +322,14 @@ export const RANGOS_PRECIO = [
 
 export function calcularMetricas(lista) {
   const total = lista.length
-  const valor = lista.reduce((s, p) => s + (Number(p.precio) || 0), 0)
-  const promedio = total ? Math.round(valor / total) : 0
-  const enOferta = lista.filter((p) => p.precioAntes)
+  // Las cifras de precio son de FRASCO: los perfumes de solo decant no
+  // tienen precio de frasco y, si entraran, bajarían el promedio y
+  // aparecerían como "el más barato" con S/ 0.
+  const frascos = lista.filter((p) => !esSoloDecant(p))
+  const soloDecant = total - frascos.length
+  const valor = frascos.reduce((s, p) => s + (Number(p.precio) || 0), 0)
+  const promedio = frascos.length ? Math.round(valor / frascos.length) : 0
+  const enOferta = frascos.filter((p) => p.precioAntes)
   // Open Box ya no se muestra en la tienda: el conteo queda como control
   // interno del panel para saber cuántos frascos son tester.
   const openBox = lista.filter((p) => p.openBox)
@@ -344,7 +363,7 @@ export function calcularMetricas(lista) {
   const porRangoPrecio = RANGOS_PRECIO.map((r) => ({
     clave: r.clave,
     etiqueta: r.etiqueta,
-    valor: lista.filter((p) => {
+    valor: frascos.filter((p) => {
       const precio = Number(p.precio) || 0
       return precio >= r.min && precio <= r.max
     }).length,
@@ -353,7 +372,7 @@ export function calcularMetricas(lista) {
   // Salud del catálogo: cosas que conviene completar
   const salud = [
     { clave: 'sinFoto', etiqueta: 'Sin foto', items: lista.filter((p) => !p.imagen) },
-    { clave: 'sinPrecio', etiqueta: 'Sin precio', items: lista.filter((p) => !Number(p.precio)) },
+    { clave: 'sinPrecio', etiqueta: 'Sin precio', items: lista.filter(sinPrecio) },
     {
       clave: 'sinConcentracion',
       etiqueta: 'Sin concentración',
@@ -362,14 +381,14 @@ export function calcularMetricas(lista) {
     { clave: 'sinNotas', etiqueta: 'Sin notas', items: lista.filter((p) => !p.notas) },
   ]
 
-  const precios = lista.map((p) => Number(p.precio) || 0)
-  const masCaro = total ? lista.find((p) => Number(p.precio) === Math.max(...precios)) : null
-  const masBarato = total ? lista.find((p) => Number(p.precio) === Math.min(...precios)) : null
+  const precios = frascos.map((p) => Number(p.precio) || 0)
+  const masCaro = frascos.length ? frascos.find((p) => Number(p.precio) === Math.max(...precios)) : null
+  const masBarato = frascos.length ? frascos.find((p) => Number(p.precio) === Math.min(...precios)) : null
 
   const recientes = [...lista].slice(0, 5)
 
   return {
-    total, valor, promedio, enOferta: enOferta.length, openBox: openBox.length,
+    total, soloDecant, valor, promedio, enOferta: enOferta.length, openBox: openBox.length,
     descuentoPromedio, porGenero, porMarca, totalMarcas, porRangoPrecio, salud,
     masCaro, masBarato, recientes,
   }

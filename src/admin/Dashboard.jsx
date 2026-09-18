@@ -84,13 +84,16 @@ export default function Dashboard({ productos, pedidos, onVerProductos, onVerPed
       icono: Package,
       etiqueta: 'Productos en catálogo',
       valor: m.total,
-      pie: `${m.totalMarcas} ${m.totalMarcas === 1 ? 'marca' : 'marcas'} distintas`,
+      pie:
+        `${m.totalMarcas} ${m.totalMarcas === 1 ? 'marca' : 'marcas'} distintas` +
+        (m.soloDecant ? ` · ${m.soloDecant} solo en decant` : ''),
     },
     {
       icono: CurrencyDollar,
       etiqueta: 'Valor del catálogo',
       valor: `${marca.moneda} ${m.valor.toLocaleString('es-PE')}`,
-      pie: `Precio promedio: ${marca.moneda} ${m.promedio}`,
+      // Solo frascos: los perfumes de solo decant no tienen precio de frasco.
+      pie: `Precio promedio del frasco: ${marca.moneda} ${m.promedio}`,
     },
     {
       icono: Tag,
