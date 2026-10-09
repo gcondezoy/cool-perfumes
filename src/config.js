@@ -18,7 +18,7 @@ export const marca = {
 
   // Número de WhatsApp en formato internacional SIN "+", espacios ni guiones.
   // Perú = 51. Aquí: 981 814 457 -> 51981814457
-  whatsapp: '51981814457',
+  whatsapp: '51938840207',
 
   // Texto con el que empieza cada pedido enviado por WhatsApp.
   saludoPedido: '¡Hola Cool Perfumes! 👋 Quisiera hacer este pedido:',
@@ -26,7 +26,7 @@ export const marca = {
   // Redes y contacto (se muestran en el pie de página).
   redes: {
     instagram: 'https://www.instagram.com/coolperfumes.pe/',
-    tiktok: 'https://www.tiktok.com/@coolperfumes.pe1',
+    tiktok: 'https://www.tiktok.com/@coolperfumes.pe',
   },
   contacto: {
     ciudad: 'Lima, Perú',
