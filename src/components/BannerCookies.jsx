@@ -9,7 +9,7 @@ export default function BannerCookies() {
   const [montado, setMontado] = useState(false)
 
   useEffect(() => {
-    // Pequeña espera para que el banner no compita con la carga del hero.
+    // Pequeña espera para que el banner no compita con la carga inicial.
     const t = setTimeout(() => setMontado(true), 600)
     const desuscribir = suscribirConsentimiento(setDecision)
     return () => {

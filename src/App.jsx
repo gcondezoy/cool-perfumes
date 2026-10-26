@@ -6,10 +6,8 @@ import { categorias } from './config.js'
 
 const CLAVE_CARRITO = 'coolperfumes_carrito_v1'
 import Header from './components/Header.jsx'
-import Hero from './components/Hero.jsx'
 import Catalogo from './components/Catalogo.jsx'
 import SeccionDecants from './components/SeccionDecants.jsx'
-import ComoComprar from './components/ComoComprar.jsx'
 import ProductoModal from './components/ProductoModal.jsx'
 import CartDrawer from './components/CartDrawer.jsx'
 import Footer from './components/Footer.jsx'
@@ -186,7 +184,7 @@ export default function App() {
       />
 
       <main>
-        <Hero onVerCatalogo={() => filtrarDesdeNav('todos')} />
+        {/* Sin portada ni "Cómo comprar": se entra directo a la colección */}
         <Catalogo
           productos={disponibles}
           agotados={agotados}
@@ -200,7 +198,6 @@ export default function App() {
           cargando={cargando}
         />
         <SeccionDecants productos={productos} onAgregar={agregar} />
-        <ComoComprar />
       </main>
 
       <Footer />

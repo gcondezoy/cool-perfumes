@@ -24,7 +24,9 @@ export default function Catalogo({
       <div className="container">
         <div className="catalogo-head">
           <div>
-            <h2 className="section-title">La colección</h2>
+            {/* Es el h1 de la página: al quitar la portada, este pasó a ser
+                el título principal que lee Google. */}
+            <h1 className="section-title">La colección</h1>
             <p className="section-sub">
               {disponibles}{' '}
               {disponibles === 1 ? 'fragancia disponible' : 'fragancias disponibles'}

@@ -23,6 +23,14 @@ export default function Header({ totalItems, scrolled, onAbrirCarrito, onFiltrar
     }
   }
 
+  // El logo vuelve arriba. Antes apuntaba a "#inicio", que era la portada;
+  // al quitarla ese ancla ya no existe y el enlace no hacía nada.
+  const irArriba = (e) => {
+    e?.preventDefault()
+    setMenu(false)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   const irA = (id) => (e) => {
     e?.preventDefault()
     setMenu(false)
@@ -42,7 +50,7 @@ export default function Header({ totalItems, scrolled, onAbrirCarrito, onFiltrar
     <>
       <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
         <div className="container header-inner">
-        <a href="#inicio" className="logo" aria-label={marca.nombre}>
+        <a href="#catalogo" className="logo" onClick={irArriba} aria-label={marca.nombre}>
           <img src={marca.logo} alt={marca.nombre} className="logo-img" />
         </a>
 
@@ -54,7 +62,6 @@ export default function Header({ totalItems, scrolled, onAbrirCarrito, onFiltrar
           <button type="button" className="nav-link" onClick={() => onFiltrar('hombre')}>
             Hombre
           </button>
-          <a href="#comprar" onClick={irA('comprar')}>Cómo comprar</a>
           <a href="#contacto" onClick={irA('contacto')}>Contacto</a>
         </nav>
 
@@ -99,7 +106,6 @@ export default function Header({ totalItems, scrolled, onAbrirCarrito, onFiltrar
           <button type="button" onClick={() => filtrar('mujer')}>Mujer</button>
           <button type="button" onClick={() => filtrar('hombre')}>Hombre</button>
           <button type="button" onClick={() => filtrar('unisex')}>Unisex</button>
-          <a href="#comprar" onClick={irA('comprar')}>Cómo comprar</a>
           <a href="#contacto" onClick={irA('contacto')}>Contacto</a>
         </nav>
 
